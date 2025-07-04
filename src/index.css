@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
 
 *{
@@ -5,3 +6,8 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+@theme {
+  --font-mulish: "Mulish", sans-serif; 
+}
+
