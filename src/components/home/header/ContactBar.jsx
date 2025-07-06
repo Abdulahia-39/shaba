@@ -1,6 +1,6 @@
-import loactionsvg from '../../assets/icons/location.svg';
-import phonesvg from '../../assets/icons/phone.svg';
-import mailsvg from '../../assets/icons/mail.svg';
+import loactionsvg from '../../../assets/icons/location.svg';
+import phonesvg from '../../../assets/icons/phone.svg';
+import mailsvg from '../../../assets/icons/mail.svg';
 
 const ContactBar = () => {
     return (

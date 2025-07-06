@@ -1,5 +1,7 @@
-import shablogo from '../../assets/shabapics/shabalogo.png';
+import shablogo from '../../../assets/shabapics/shabalogo.png';
 import { useEffect, useRef } from 'react';
+import SideNavDropdown from './SideNavDropdown';
+
 
 const SideNavbar = ({ isOpen, onClose }) => {
   const navbarRef = useRef(null); // Ref for the navbar element
@@ -50,6 +52,9 @@ const SideNavbar = ({ isOpen, onClose }) => {
     };
   }, [isOpen, onClose]); // Re-run effect when isOpen or onClose changes
 
+
+  const linkClass = "text-md font-bold text-md";
+
   return (
     <>
       {/* Side Navbar */}
@@ -69,16 +74,35 @@ const SideNavbar = ({ isOpen, onClose }) => {
         </div>
         <div>
             <ul className='flex flex-col items-center justify-start gap-6'>
-                <li><a href="" className="text-md font-medium text-2xl">Home</a></li>
-                <li><a href="" className="text-md font-medium text-2xl">Projects</a></li>
-                <li><a href="" className="text-md font-medium text-2xl">Blog</a></li>
-                <li><a href="" className="text-md font-medium text-2xl">Report</a></li>
-                <li><a href="" className="text-md font-medium text-2xl">Contact</a></li>
-                <li><a href="" className="text-md font-medium text-2xl">About</a></li>
+                <li><a href="" className={linkClass}>Home</a></li>
+                <li><a href="" className={linkClass}>Projects</a></li>
+                <li><a href="" className={linkClass}>Blog</a></li>
+                <SideNavDropdown 
+                linkName="Report" 
+                linkClass={linkClass}
+                subLinks={[
+                  { name: '2019 report', href: '#' },
+                  { name: '2020 report', href: '#' }
+                ]}
+                iconClassDown="fas fa-chevron-down text-black text-xs"
+                iconClassUp="fas fa-chevron-up text-black text-xs"
+                />
+                <li><a href="" className={linkClass}>Contact</a></li>
+                <SideNavDropdown
+                linkName="About" 
+                linkClass={linkClass}
+                subLinks={[
+                  { name: 'About the company', href: '#' },
+                  { name: 'PPP', href: '#' },
+                  { name: 'Our work', href: '#' }
+                ]}
+                iconClassDown="fas fa-chevron-down text-black text-xs"
+                iconClassUp="fas fa-chevron-up text-black text-xs"
+                />
             </ul>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 p-4 text-center w-full mb-5">
-            <p className="">
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-center w-full mb-5 h-20">
+            <p className="text-sm text-gray-500">
                 © 2025 Shaba water company. Created by abdullahi tech solutions.
             </p>
         </div>
