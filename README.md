@@ -1,12 +1,3 @@
-# React + Vite
+# Shaba water company
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+This is the official codepace for the website of SHABA. A Public Private Partnership water services company that is based in Borama, the capital of the awdal region in Somaliland. This website is under development using fullstack javascript but is planned to replace the older wordpress website [@Shabawatercompany](https://shabawatercompany.com/). Any unautorized use of this code without agreement from the developer is prohibited.
