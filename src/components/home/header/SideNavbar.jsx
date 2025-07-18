@@ -74,9 +74,9 @@ const SideNavbar = ({ isOpen, onClose }) => {
         </div>
         <div>
             <ul className='flex flex-col items-center justify-start gap-6'>
-                <li><a href="" className={linkClass}>Home</a></li>
-                <li><a href="" className={linkClass}>Projects</a></li>
-                <li><a href="" className={linkClass}>Blog</a></li>
+                <li className='text-sm w-full text-left'><a href="" className={linkClass}>Home</a></li>
+                <li className='text-sm w-full text-left'><a href="" className={linkClass}>Projects</a></li>
+                <li className='text-sm w-full text-left'><a href="" className={linkClass}>Blog</a></li>
                 <SideNavDropdown 
                 linkName="Report" 
                 linkClass={linkClass}
@@ -87,7 +87,7 @@ const SideNavbar = ({ isOpen, onClose }) => {
                 iconClassDown="fas fa-chevron-down text-black text-xs"
                 iconClassUp="fas fa-chevron-up text-black text-xs"
                 />
-                <li><a href="" className={linkClass}>Contact</a></li>
+                <li className='text-sm w-full text-left'><a href="" className={linkClass}>Contact</a></li>
                 <SideNavDropdown
                 linkName="About" 
                 linkClass={linkClass}

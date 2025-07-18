@@ -90,7 +90,7 @@ const Navbar = () => {
     return (
         <>
         <div className={`${!isScrolled ? '': 'h-30'}`}></div>
-        <nav className={`${isScrolled ? 'fixed bg-green-300 ': ''} w-full top-0 z-50 shadow-lg flex items-center justify-around gap-50 bg-none text-white p-4 h-30 my-6 transition-all duration-300 ease-in-out`}>
+        <nav className={`${isScrolled ? 'fixed bg-green-300 ': ''} w-full top-0 z-50 shadow-lg flex items-center justify-around gap-50 bg-none text-white p-4 h-30 transition-all duration-300 ease-in-out`}>
                 <div>
                     <img src={shablogo} alt="shaaba's logo" className='w-16 h-16 ' />
                 </div>
@@ -101,30 +101,30 @@ const Navbar = () => {
                     <li><a href="" className={linkStyle}>Blog</a></li>
                     <li className='relative' ref={reportDropdownRef} onClick={toggleReportDropdown}>
                         <a href="" className={linkStyle}>
-                            <div className="flex gap-2 items-center">
+                            <div className="flex gap-1 items-center justify-center">
                                 Report
-                                <i className="fas fa-chevron-down text-white text-xs"></i>
+                                <i className={`fas fa-chevron-down ${isScrolled ? 'text-black' : 'text-white'} text-xs`}></i>
                             </div>
                         </a>
                         {showDropdown.report &&
                         <ul className='absolute bg-white text-black shadow-lg mt-5 z-10 top-10 flex flex-col justify-around items-center gap-2 w-45'>
-                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-black font-medium text-sm'><a href="">2019 report</a></li>
-                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-black font-medium text-sm'><a href="">2020 report</a></li>
+                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm'><a href="">2019 report</a></li>
+                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm'><a href="">2020 report</a></li>
                         </ul>}
                     </li>
                     <li><a href="" className={linkStyle}>Contact</a></li>
                     <li className='relative' ref={aboutDropdownRef} onClick={toggleAboutDropdown}>
                         <a href="" className={linkStyle}>
-                            <div className="flex gap-2 items-center">
+                            <div className="flex gap-1 items-center justify-center">
                                 About
-                                <i className="fas fa-chevron-down text-white text-xs"></i>
+                                <i className={`fas fa-chevron-down ${isScrolled ? 'text-black' : 'text-white'} text-xs`}></i>
                             </div>
                         </a>
                         {showDropdown.about &&
-                        <ul className='absolute bg-white text-black shadow-lg mt-5 z-10 top-10 flex flex-col justify-around items-center gap-2 w-45'>
-                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-black font-medium text-sm'><a href="">About the company</a></li>
-                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-black font-medium text-sm'><a href="">PPP</a></li>
-                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-black font-medium text-sm'><a href="">Our work</a></li>
+                        <ul className='absolute bg-white text-black shadow-lg mt-5 z-10 top-10 -left-12 flex flex-col justify-around items-center gap-2 w-45'>
+                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm'><a href="">About the company</a></li>
+                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm'><a href="">PPP</a></li>
+                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm'><a href="">Our work</a></li>
                         </ul>}
                     </li>
                 </ul>

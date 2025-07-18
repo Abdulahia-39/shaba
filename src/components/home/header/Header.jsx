@@ -11,12 +11,17 @@ const Header = () => {
             <ContactBar />
             <Navbar />
             <div className="flex flex-col items-center justify-center text-white text-center h-3/4">
-                <h1 className='text-4xl font-bold lg:text-6xl w-3/4 mx-auto h-1/3'>Shirkada adeegyada bulshada Awdal SHABA</h1>
+                <h1 className='text-4xl/relaxed font-bold lg:text-6xl/relaxed w-3/4 mx-auto h-1/3 mb-5'>Shirkada adeegyada bulshada Awdal <span className='text-green-300'>SHABA</span></h1>
                 <p className='sm:text-xl text-lg text-wrap'>Shaba provides water services to borama’s community</p>
                 <div className="h-1/5 flex justify-center items-center">
                     <button className='h-12 mt-10 border-2 border-white w-40 rounded-4xl hover:bg-green-300 hover:text-black hover:font-semibold transition duration-300'>Learn More</button>
                 </div>
-                <a href='#About'><i className='fas fa-chevron-down text-white text-2xl absolute bottom-5 animate-bounce cursor-pointer'></i></a>
+                <a href=''><i className='fas fa-chevron-down text-white text-2xl absolute bottom-5 animate-bounce cursor-pointer' 
+                    onClick={(e) => {
+                    e.preventDefault();
+                    window.scrollBy(0, window.innerHeight)}}>
+                    </i>
+                </a>
             </div>
         </header>
     )

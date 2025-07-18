@@ -9,17 +9,17 @@ const SideNavDropdown = ({linkName, linkClass, subLinks, iconClassDown, iconClas
     }
 
     return (
-        <li className='' onClick={toggleDropdown}>
-            <a href="" className={linkClass}>
-            <div className="flex gap-2 items-center">
-                {linkName}
+        <li className='w-full text-sm ' onClick={toggleDropdown}>
+            <a href="" className={linkClass + " w-full"}>
+            <div className="flex gap-2 items-center w-full">
+                <span className='w-full mx-auto text-left'>{linkName}</span>
                 {showDropdown ? <i className={iconClassUp}></i> : <i className={iconClassDown}></i>}
             </div>  
             </a>
-            {showDropdown && <ul className='text-black mt-5 z-10 flex flex-col justify-around items-center w-20'>
-            {subLinks.map((link) => (
-                <li key={link.name} className='h-15 content-evenly text-center font-medium text-sm text-nowrap'>
-                    <a href={link.href}>{link.name}</a>
+            {showDropdown && <ul className='text-black mt-5 z-10 w-full'>
+            {subLinks.map((link) => (  
+                <li key={link.name} className='text-center font-medium text-sm text-nowrap'>
+                    <a href={link.href} className='inline-block my-1 w-full p-1 text-right'>{link.name}</a>
                 </li>
             ))}
            </ul>
