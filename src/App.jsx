@@ -5,6 +5,7 @@ import Mission from './components/home/mission/Mission.jsx'
 import SecretsOfSuccess from './components/home/secretsOfSuccess/secretsOfSuccess.jsx'
 import Partners from './components/home/partners/Partners.jsx'
 import LatestPosts from './components/home/latestPosts/LatestPosts.jsx'
+import Contact from './components/home/contact/Contact.jsx'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <SecretsOfSuccess />
       <Partners />
       <LatestPosts />
+      <Contact />
     </div>
   )
 }
