@@ -2,7 +2,7 @@ import successImg from '../../../assets/shabapics/success.jpg';
 
 const SecretsOfSuccess = () => {
     return (
-        <section className="w-5/6 min-h-screen flex flex-col gap-10 h-full mx-auto mb-10 mt-25">
+        <section className="w-5/6 min-h-screen flex flex-col gap-10 h-full mx-auto mb-10 mt-45">
             <div className="w-full my-12 h-1/3 text-center lg:text-left">
                 <h2 className="text-5xl font-semibold my-5">The secrets of success</h2>
                 <p className="text-lg text-green-500">Shaba's secrets to success</p>
