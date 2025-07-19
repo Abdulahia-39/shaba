@@ -10,25 +10,25 @@ const SecretsOfSuccess = () => {
             <div className="flex flex-col gap-10 xl:flex-row">
                 <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-10">
                     <div className="max-w-120 mx-auto lg:mx-0">
-                        <i class="fa-solid fa-binoculars text-green-400 text-3xl text-center lg:text-left w-full"></i>
+                        <i className="fa-solid fa-binoculars text-green-400 text-3xl text-center lg:text-left w-full"></i>
                         <h3 className="text-xl mt-3 text-center lg:text-left">Visionary Leadership and Governance</h3>
                         <p className="text-gray-700 text-center lg:text-left">A transparent and accountable management structure ensures that every decision aligns with our mission of providing reliable, affordable, and sustainable water supply services. Regular stakeholder engagement and a participatory approach have strengthened trust and cooperation.</p>
                     </div>
 
                     <div className="max-w-120 mx-auto lg:mx-0">
-                        <i class="fa-solid fa-trophy text-green-400 text-3xl text-center lg:text-left w-full"></i>
+                        <i className="fa-solid fa-trophy text-green-400 text-3xl text-center lg:text-left w-full"></i>
                         <h3 className="text-xl mt-3 text-center lg:text-left">Innovative Public-Private Partnership (PPP) Model</h3>
                         <p className="text-gray-700 text-center lg:text-left">SHABA’s PPP framework, the first of its kind in Somaliland, combines the efficiency of private enterprise with the oversight and support of public institutions. This synergy has enabled us to achieve significant milestones, including increasing daily water production and expanding infrastructure.</p>
                     </div>
 
                     <div className="max-w-120 mx-auto lg:mx-0">
-                        <i class="fa-solid fa-gears text-green-400 text-3xl text-center lg:text-left w-full"></i>
+                        <i className="fa-solid fa-gears text-green-400 text-3xl text-center lg:text-left w-full"></i>
                         <h3 className="text-xl mt-3 text-center lg:text-left">Focus on Infrastructure and Service Expansion</h3>
                         <p className="text-gray-700 text-center lg:text-left">Through strategic investments in boreholes, reservoirs, pipelines, and advanced technologies, we’ve consistently improved water availability and efficiency. These efforts reduced water loss from 60% to just 10%, ensuring reliable services for over 19,675 households as of 2023 and also ensuring 24/7 water availabilty.</p>
                     </div>
 
                     <div className="max-w-120 mx-auto lg:mx-0">
-                        <i class="fa-solid fa-user-group text-green-400 text-3xl text-center lg:text-left w-full"></i>
+                        <i className="fa-solid fa-user-group text-green-400 text-3xl text-center lg:text-left w-full"></i>
                         <h3 className="text-xl mt-3 text-center lg:text-left">Commitment to the Community</h3>
                         <p className="text-gray-700 text-center lg:text-left">SHABA’s pro-unwealthy pricing approach and focus on reducing waterborne diseases have directly impacted the health and well-being of Borama’s residents. Our dedication extends beyond water provision, contributing to social development and environmental sustainability.</p>
                     </div>

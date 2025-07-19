@@ -6,6 +6,7 @@ import SecretsOfSuccess from './components/home/secretsOfSuccess/secretsOfSucces
 import Partners from './components/home/partners/Partners.jsx'
 import LatestPosts from './components/home/latestPosts/LatestPosts.jsx'
 import Contact from './components/home/contact/Contact.jsx'
+import Footer from './components/home/footer/Footer.jsx'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Partners />
       <LatestPosts />
       <Contact />
+      <Footer />
     </div>
   )
 }

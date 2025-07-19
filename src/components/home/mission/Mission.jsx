@@ -2,8 +2,8 @@ import shabaLogo from '../../../assets/shabapics/shabalogo.png';
 
 const Mission = () => {
     return (
-        <section className="w-5/6 min-h-screen flex flex-col gap-10 h-full mx-auto my-10">
-                <div className="w-full text-center my-12 h-1/3">
+        <section className="w-5/6 min-h-screen flex flex-col gap-2 h-full mx-auto my-10">
+                <div className="w-full text-center mt-20 h-1/3">
                     <h2 className="text-5xl font-semibold my-5">Shaba’s missions</h2>
                     <p className="text-lg text-green-500">The company’s missions drive it's work</p>
                 </div>
@@ -20,7 +20,7 @@ const Mission = () => {
                     </div>
                     
                     <div className="hidden flex-1 xl:flex justify-center items-center">
-                        <div className="h-80 w-80 bg-green-300 rounded-full flex flex-col gap-6 justify-center items-center shadow-2xl">
+                        <div className="h-80 w-80 bg-green-300 rounded-full flex flex-col gap-6 justify-center items-center shadow-2xl hover:shadow-xl transition-all duration-300 hover:-translate-z-1">
                             <img src={shabaLogo} className="w-25" />
                             <p className="text-3xl font-semibold ">Shaba's missions</p>
                         </div>
