@@ -14,7 +14,7 @@ const About = () => {
                 </div>
                 <div className="bg-[#fffcf2] shadow-lg rounded-lg p-6 flex gap-4 w-full">
                     <div className="flex-1 flex justify-center items-start">
-                        <i class="fa-solid fa-building-columns text-green-300 text-2xl pt-4"></i>
+                        <i className="fa-solid fa-building-columns text-green-300 text-2xl pt-4"></i>
                     </div>
                     <div className="flex-6">
                         <h3 className="font-semibold text-xl my-3">Shaba pioneered PPP in the region</h3>
