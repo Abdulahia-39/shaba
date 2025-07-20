@@ -1,6 +1,7 @@
 import shablogo from '../../../assets/shabapics/shabalogo.png';
 import { useState, useEffect, useRef } from 'react';
 import SideNavbar from './SideNavbar';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -64,7 +65,7 @@ const Navbar = () => {
   }, [showDropdown]);
     
 
-    const linkStyle = `${isScrolled ? 'text-black' : 'text-white'} text-sm uppercase font-bold font-mulish after:block after:w-0 after:h-1 after:rounded ${isScrolled ? 'after:bg-green-800' : 'after:bg-white'} after:transition-all after:duration-300 hover:after:w-full`;
+    const linkStyle = `${isScrolled ? 'text-black' : 'text-white'} text-sm uppercase font-bold font-mulish after:block after:w-0 after:h-1 after:rounded ${isScrolled ? 'after:bg-green-800' : 'after:bg-white'} after:transition-all after:duration-300 hover:after:w-full cursor-pointer`;
 
     const toggleReportDropdown = (event) => {
         event.preventDefault();
@@ -96,9 +97,9 @@ const Navbar = () => {
                 </div>
 
                 <ul className='hidden items-center justify-around gap-6 lg:flex'>
-                    <li><a href="" className={linkStyle}>Home</a></li>
-                    <li><a href="" className={linkStyle}>Projects</a></li>
-                    <li><a href="" className={linkStyle}>Blog</a></li>
+                    <li className={linkStyle}><Link to="/">Home</Link></li>
+                    <li className={linkStyle}><Link to="/projects">Projects</Link></li>
+                    <li className={linkStyle}><Link to="/blog">Blog</Link></li>
                     <li className='relative' ref={reportDropdownRef} onClick={toggleReportDropdown}>
                         <a href="" className={linkStyle}>
                             <div className="flex gap-1 items-center justify-center">
@@ -112,7 +113,7 @@ const Navbar = () => {
                             <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm'><a href="">2020 report</a></li>
                         </ul>}
                     </li>
-                    <li><a href="" className={linkStyle}>Contact</a></li>
+                    <li className={linkStyle}>Contact</li>
                     <li className='relative' ref={aboutDropdownRef} onClick={toggleAboutDropdown}>
                         <a href="" className={linkStyle}>
                             <div className="flex gap-1 items-center justify-center">

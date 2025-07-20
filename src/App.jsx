@@ -1,26 +1,15 @@
-import Header from './components/home/header/Header.jsx'
-import About from './components/home/about/About.jsx'
-import Vision from './components/home/vision/Vision.jsx'
-import Mission from './components/home/mission/Mission.jsx'
-import SecretsOfSuccess from './components/home/secretsOfSuccess/secretsOfSuccess.jsx'
-import Partners from './components/home/partners/Partners.jsx'
-import LatestPosts from './components/home/latestPosts/LatestPosts.jsx'
-import Contact from './components/home/contact/Contact.jsx'
-import Footer from './components/home/footer/Footer.jsx'
+import Home from "./components/home/Home"
+import Projects from "./components/projects/Projects.jsx"
+import NotFound from "./components/notFound/NotFound.jsx"
+import { Route, Routes } from "react-router-dom";
 
 function App() {
   return (
-    <div className="bg-[#f8f9fa]">
-      <Header />
-      <About />
-      <Vision />
-      <Mission />
-      <SecretsOfSuccess />
-      <Partners />
-      <LatestPosts />
-      <Contact />
-      <Footer />
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/projects" element={<Projects />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   )
 }
 
