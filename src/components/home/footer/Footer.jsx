@@ -2,7 +2,7 @@ import shabaLogo from '../../../assets/shabapics/shabalogo.png';
 
 const Footer = () => {
     return (
-        <footer className="">
+        <footer className="border-t-1 border-gray-400">
             <div className="flex flex-col sm:flex-row items-center p-10 w-11/12 mx-auto gap-10">
                 <div className="flex-1 flex flex-col gap-5 ">
                     <div className="flex-1 flex flex-col items-center sm:items-start gap-3">
