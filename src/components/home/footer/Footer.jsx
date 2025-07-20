@@ -24,28 +24,28 @@ const Footer = () => {
                     <div className='flex-1'>
                         <ul className="flex flex-col gap-2">
                             <li className='text-black font-medium text-lg'>Pages</li>
-                            <a><li>Home</li></a>
-                            <a><li>Projects</li></a>
-                            <a><li>Blog</li></a>
-                            <a><li>Report</li></a>
-                            <a><li>Contact</li></a>
-                            <a><li>About</li></a>
+                            <a><li className='text-sm'>Home</li></a>
+                            <a><li className='text-sm'>Projects</li></a>
+                            <a><li className='text-sm'>Blog</li></a>
+                            <a><li className='text-sm'>Report</li></a>
+                            <a><li className='text-sm'>Contact</li></a>
+                            <a><li className='text-sm'>About</li></a>
                         </ul>
                     </div>
                     <div className='flex-1'>
                         <ul className="flex flex-col gap-2">
                             <li className='text-black font-medium text-lg'>Resources</li>
-                            <a><li>Blog</li></a>
-                            <a><li className='text-nowrap'>2019 report</li></a>
-                            <a><li className='text-nowrap'>2020 report</li></a>
-                            <a><li>Careers</li></a>
+                            <a><li className='text-sm'>Blog</li></a>
+                            <a><li className='text-nowrap text-sm'>2019 report</li></a>
+                            <a><li className='text-nowrap text-sm'>2020 report</li></a>
+                            <a><li className='text-sm'>Careers</li></a>
                         </ul>
                     </div>
                     <div className='flex-1'>
                         <ul className="flex flex-col gap-2">
                             <li className='text-black font-medium text-lg'>Company</li>
-                            <a><li>About us</li></a>
-                            <a><li>Our work</li></a>
+                            <a><li className='text-sm'>About us</li></a>
+                            <a><li className='text-sm'>Our work</li></a>
                         </ul>
                     </div>
                 </div>
