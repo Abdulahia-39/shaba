@@ -2,6 +2,7 @@ import shablogo from '../../../assets/shabapics/shabalogo.png';
 import { useState, useEffect, useRef } from 'react';
 import SideNavbar from './SideNavbar';
 import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -13,6 +14,8 @@ const Navbar = () => {
 
     const reportDropdownRef = useRef(null);
     const aboutDropdownRef = useRef(null);
+
+    const { pathname } = useLocation();
 
     const openNavbar = () => {
         setIsOpen(true);
@@ -97,8 +100,12 @@ const Navbar = () => {
                 </div>
 
                 <ul className='hidden items-center justify-around gap-6 lg:flex'>
-                    <li className={linkStyle}><Link to="/">Home</Link></li>
-                    <li className={linkStyle}><Link to="/projects">Projects</Link></li>
+                    <li className={`${isScrolled ? 'text-black' : 'text-white'} text-sm uppercase font-bold font-mulish after:block ${pathname === '/' ? 'w-full' : 'after:w-0'} after:h-1 after:rounded ${isScrolled ? 'after:bg-green-800' : 'after:bg-white'} after:transition-all after:duration-300 hover:after:w-full cursor-pointer`}>
+                        <Link to="/">Home</Link>
+                    </li>
+                    <li className={`${isScrolled ? 'text-black' : 'text-white'} text-sm uppercase font-bold font-mulish after:block ${pathname === '/projects' ? 'w-full' : 'after:w-0'} after:h-1 after:rounded ${isScrolled ? 'after:bg-green-800' : 'after:bg-white'} after:transition-all after:duration-300 hover:after:w-full cursor-pointer`}>
+                        <Link to="/projects">Projects</Link>
+                    </li>
                     <li className={linkStyle}><Link to="/blog">Blog</Link></li>
                     <li className='relative' ref={reportDropdownRef} onClick={toggleReportDropdown}>
                         <a href="" className={linkStyle}>
@@ -113,7 +120,9 @@ const Navbar = () => {
                             <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm'><a href="">2020 report</a></li>
                         </ul>}
                     </li>
-                    <li className={linkStyle}>Contact</li>
+                    <li className={`${isScrolled ? 'text-black' : 'text-white'} text-sm uppercase font-bold font-mulish after:block ${pathname === '/contact' ? 'w-full' : 'after:w-0'} after:h-1 after:rounded ${isScrolled ? 'after:bg-green-800' : 'after:bg-white'} after:transition-all after:duration-300 hover:after:w-full cursor-pointer`}>
+                        <Link to="/contact">Contact</Link>
+                    </li>
                     <li className='relative' ref={aboutDropdownRef} onClick={toggleAboutDropdown}>
                         <a href="" className={linkStyle}>
                             <div className="flex gap-1 items-center justify-center">

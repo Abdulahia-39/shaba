@@ -6,7 +6,9 @@ import ProjectList from "./project/ProjectList";
 const Projects = () => {
   return (
     <div className="bg-[#f8f9fa]">
-      <Header />
+      <Header
+        headerText="Shaba's Projects"
+      />
       <Description />  
       <ProjectList />
       <Footer />
