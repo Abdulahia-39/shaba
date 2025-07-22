@@ -45,12 +45,14 @@ const Navbar = () => {
       if (
         (reportDropdownRef.current && !reportDropdownRef.current.contains(event.target)) || 
         (aboutDropdownRef.current && !aboutDropdownRef.current.contains(event.target))) {
-        setShowDropdown((prevState) => {
-            const newState = { ...prevState };
-            newState.report = false; // Close report dropdown
-            newState.about = false; // Close about dropdown
-            return newState;
-        }); // Close the dropdown
+        setTimeout(() => {
+             setShowDropdown((prevState) => {
+                const newState = { ...prevState };
+                newState.report = false; // Close report dropdown
+                newState.about = false; // Close about dropdown
+                return newState;
+            }); // Close the dropdown
+        }, 300)
       }
     };
 
@@ -115,26 +117,31 @@ const Navbar = () => {
                             </div>
                         </a>
                         {showDropdown.report &&
-                        <ul className='absolute bg-white text-black shadow-lg mt-5 z-10 top-10 flex flex-col justify-around items-center gap-2 w-45'>
-                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm'><a href="">2019 report</a></li>
-                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm'><a href="">2020 report</a></li>
+                        <ul className='absolute bg-white text-black shadow-lg mt-5 z-10 top-10 flex flex-col justify-around items-center w-45'>
+                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm transition-all duration-300 ease-in-out hover:bg-green-400 hover:text-white'><a href="">2019 report</a></li>
+                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm transition-all duration-300 ease-in-out hover:bg-green-400 hover:text-white'><a href="">2020 report</a></li>
                         </ul>}
                     </li>
                     <li className={`${isScrolled ? 'text-black' : 'text-white'} text-sm uppercase font-bold font-mulish after:block ${pathname === '/contact' ? 'w-full' : 'after:w-0'} after:h-1 after:rounded ${isScrolled ? 'after:bg-green-800' : 'after:bg-white'} after:transition-all after:duration-300 hover:after:w-full cursor-pointer`}>
                         <Link to="/contact">Contact</Link>
                     </li>
-                    <li className='relative' ref={aboutDropdownRef} onClick={toggleAboutDropdown}>
-                        <a href="" className={linkStyle}>
+                    <li className='relative' ref={aboutDropdownRef}>
+                        <div className={`${isScrolled ? 'text-black' : 'text-white'} text-sm uppercase font-bold font-mulish after:block ${pathname === '/about' ? 'w-full' : 'after:w-0'} after:h-1 after:rounded ${isScrolled ? 'after:bg-green-800' : 'after:bg-white'} after:transition-all after:duration-300 hover:after:w-full cursor-pointer`}
+                             onClick={toggleAboutDropdown}>
                             <div className="flex gap-1 items-center justify-center">
                                 About
                                 <i className={`fas fa-chevron-down ${isScrolled ? 'text-black' : 'text-white'} text-xs`}></i>
                             </div>
-                        </a>
+                        </div>
                         {showDropdown.about &&
-                        <ul className='absolute bg-white text-black shadow-lg mt-5 z-10 top-10 -left-12 flex flex-col justify-around items-center gap-2 w-45'>
-                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm'><a href="">About the company</a></li>
-                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm'><a href="">PPP</a></li>
-                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm'><a href="">Our work</a></li>
+                        <ul className='absolute bg-white text-black shadow-lg mt-5 z-10 top-10 -left-12 flex flex-col justify-around items-center w-45'
+                            onClick={e => e.stopPropagation()}
+                        >                           
+                                <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm transition-all duration-300 ease-in-out hover:bg-green-400 hover:text-white'>
+                                   <Link to="/about">About the Company</Link>
+                                </li>
+                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm transition-all duration-300 ease-in-out hover:bg-green-400 hover:text-white'>PPP</li>
+                            <li className='h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm transition-all duration-300 ease-in-out hover:bg-green-400 hover:text-white'>Our work</li>
                         </ul>}
                     </li>
                 </ul>

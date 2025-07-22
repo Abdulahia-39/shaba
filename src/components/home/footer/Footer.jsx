@@ -1,4 +1,5 @@
 import shabaLogo from '../../../assets/shabapics/shabalogo.png';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
     return (
@@ -24,12 +25,12 @@ const Footer = () => {
                     <div className='flex-1'>
                         <ul className="flex flex-col gap-2">
                             <li className='text-black font-medium text-lg'>Pages</li>
-                            <a><li className='text-sm'>Home</li></a>
-                            <a><li className='text-sm'>Projects</li></a>
-                            <a><li className='text-sm'>Blog</li></a>
-                            <a><li className='text-sm'>Report</li></a>
-                            <a><li className='text-sm'>Contact</li></a>
-                            <a><li className='text-sm'>About</li></a>
+                            <Link to="/"><li className='text-sm cursor-pointer'>Home</li></Link>
+                            <Link to="/projects"><li className='text-sm cursor-pointer'>Projects</li></Link>
+                            <Link to="/"><li className='text-sm cursor-pointer'>Blog</li></Link>
+                            <Link to="/"><li className='text-sm cursor-pointer'>Report</li></Link>
+                            <Link to="/contact"><li className='text-sm cursor-pointer'>Contact</li></Link>
+                            <Link to="/about"><li className='text-sm cursor-pointer'>About</li></Link>
                         </ul>
                     </div>
                     <div className='flex-1'>
