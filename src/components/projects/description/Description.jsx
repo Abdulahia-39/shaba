@@ -5,8 +5,8 @@ const Description = () => {
   return (
     <section className="w-5/6 mx-auto mt-35">
         <div className="flex flex-col md:flex-row items-center gap-10 mb-20">
-            <div className="flex-1">
-                <p className="text-5xl font-semibold text-gray-300">01</p>
+            <div className="flex-1 md:h-80">
+                <p className="text-5xl font-semibold text-gray-300 md:pt-4">01</p>
             </div>
             <div className="flex-3">
                 <h2 className="text-5xl font-semibold mb-8 text-center md:text-left">Projects</h2>
@@ -17,7 +17,7 @@ const Description = () => {
             </div>           
         </div>
         <div className="flex flex-col md:flex-row items-center gap-10 mb-20">
-            <div className="flex-1">
+            <div className="flex-1 md:h-80">
                 <p className="text-5xl font-semibold text-gray-300">02</p>
             </div>
             <div className="flex-3">
