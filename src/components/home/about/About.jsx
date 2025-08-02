@@ -5,7 +5,7 @@ const About = () => {
     return (
         <section className="flex w-full flex-col lg:flex-row mb-15">
             <div className="flex-1 flex justify-center items-start pt-20 gap-6 min-h-screen p-10">               
-                <div className="w-42 h-[500px] rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-300 ease-in-out">
+                <div className="w-35 sm:w-42 h-[400px] sm:h-[500px] rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-300 ease-in-out">
                     <img
                     src={homeAboutImage}
                     alt="Mosque"
@@ -13,7 +13,7 @@ const About = () => {
                     />
                 </div>
                 
-                <div className="w-46 h-[600px] rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-300 ease-in-out mt-20">
+                <div className="w-37 sm:w-46 h-[500px] sm:h-[600px] rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-300 ease-in-out mt-20">
                     <img
                     src={homeAboutImage}
                     alt="Mosque"
@@ -21,7 +21,7 @@ const About = () => {
                     />
                 </div>
 
-                <div className="w-42 h-[500px] rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-300 ease-in-out">
+                <div className="w-35 sm:w-42 h-[400px] sm:h-[500px] rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-300 ease-in-out">
                     <img
                     src={homeAboutImage}
                     alt="Mosque"

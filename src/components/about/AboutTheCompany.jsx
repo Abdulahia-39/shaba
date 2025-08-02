@@ -3,6 +3,7 @@ import aboutPic from "../../assets/shabapics/shabapics1.jpg"
 import Vision from "../home/vision/Vision";
 import Footer from "../home/footer/Footer";
 import Mission from "../home/mission/Mission";
+import Contact from "../home/contact/Contact";
 
 const AboutTheCompany = () => {
     return (
@@ -17,7 +18,7 @@ const AboutTheCompany = () => {
                         <img
                         src={aboutPic}
                         alt="Mosque"
-                        className="w-full h-full object-cover object-left transition-transform duration-500 ease-in-out hover:scale-105"
+                        className="w-full h-full object-cover object-left transition-transform duration-500 ease-in-out hover:scale-105 cursor-pointer"
                         />
                     </div>
                     
@@ -25,7 +26,7 @@ const AboutTheCompany = () => {
                         <img
                         src={aboutPic}
                         alt="Mosque"
-                        className="w-full h-full object-cover object-center transition-transform duration-500 ease-in-out hover:scale-105"
+                        className="w-full h-full object-cover object-center transition-transform duration-500 ease-in-out hover:scale-105 cursor-pointer"
                         />
                     </div>
 
@@ -33,7 +34,7 @@ const AboutTheCompany = () => {
                         <img
                         src={aboutPic}
                         alt="Mosque"
-                        className="w-full h-full object-cover object-right transition-transform duration-500 ease-in-out hover:scale-105"
+                        className="w-full h-full object-cover object-right transition-transform duration-500 ease-in-out hover:scale-105 cursor-pointer"
                         />
                     </div>
                 </div>
@@ -57,6 +58,7 @@ As Borama’s population grows, so does the demand for clean, reliable water—a
             </section>
             <Vision />
             <Mission />
+            <Contact />
             <Footer />
         </div>
     )

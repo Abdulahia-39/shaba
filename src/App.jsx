@@ -3,6 +3,7 @@ import Projects from "./components/projects/Projects.jsx";
 import NotFound from "./components/notFound/NotFound.jsx";
 import ContactUs from "./components/contact/ContactUs.jsx";
 import AboutTheCompany from "./components/about/AboutTheCompany.jsx";
+import Blog from "./components/blog/Blog.jsx";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -25,6 +26,7 @@ function App() {
         <Route path="/projects" element={<Projects />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/about" element={<AboutTheCompany />} />
+        <Route path="/blog" element={<Blog />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

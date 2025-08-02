@@ -52,7 +52,7 @@ const Navbar = () => {
                 newState.about = false; // Close about dropdown
                 return newState;
             }); // Close the dropdown
-        }, 300)
+        }, 500)
       }
     };
 

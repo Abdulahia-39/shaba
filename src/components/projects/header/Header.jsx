@@ -5,7 +5,7 @@ import headerBg from '../../../assets/shabapics/headerBg.png';
 const Header = ({headerText}) => {
     const overlayColor = 'rgba(0, 0, 0, 0.6)';
     return (
-        <header className="min-h-[75vh] w-full bg-cover bg-center"
+        <header className="min-h-[75vh] w-full bg-cover bg-center bg-fixed"
                 style={{ backgroundImage: `linear-gradient(${overlayColor}, ${overlayColor}),url(${headerBg})` }} 
         >
             <ContactBar />

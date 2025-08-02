@@ -3,7 +3,7 @@ import contactbg from '../../../assets/shabapics/contactbg.jpg';
 const Contact = () => {
     const overlayColor = 'rgba(0, 0, 0, 0.6)';
     return (
-        <section className="min-h-screen w-full bg-cover bg-center flex justify-center items-center" style={{ backgroundImage: `linear-gradient(${overlayColor}, ${overlayColor}),url(${contactbg})` }} >
+        <section className="min-h-screen w-full bg-cover bg-center bg-fixed flex justify-center items-center" style={{ backgroundImage: `linear-gradient(${overlayColor}, ${overlayColor}),url(${contactbg})` }} >
             <div className="flex flex-col lg:flex-row w-5/6 bg-white my-10">
                 <div className="bg-green-950 flex-1 px-4 sm:px-20 py-8">
                     <div className="h-20 w-20 rounded-full border-2 border-white flex justify-center items-center">
