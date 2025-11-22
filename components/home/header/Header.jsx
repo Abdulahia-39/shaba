@@ -2,7 +2,6 @@ const headerBg = "/assets/shabapics1.jpg";
 import ContactBar from "./ContactBar";
 import Navbar from "./Navbar";
 import ArrowIcon from "./ArrowIcon";
-// import { ArrowDown } from "lucide-react";
 
 const Header = () => {
   const overlayColor = "rgba(0, 0, 0, 0.6)";
