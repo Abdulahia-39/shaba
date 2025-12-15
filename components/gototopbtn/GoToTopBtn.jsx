@@ -1,18 +1,20 @@
 "use client";
 
-const GoToTopBtn = () => {
-    const GoToTop = () => {
-        window.scrollTo(0, 0);
-    }
+import { FaArrowUp } from "react-icons/fa6";
 
-    return (
-        <button 
-            className="fixed bottom-5 right-10 w-12 h-12 rounded-full bg-green-800 opacity-80 hover:opacity-100 flex justify-center items-center cursor-pointer"
-            onClick={GoToTop}
-        >
-            <i className='fas fa-chevron-up text-white text-lg'></i>
-        </button>
-    )
-}
+const GoToTopBtn = () => {
+  const GoToTop = () => {
+    window.scrollTo(0, 0);
+  };
+
+  return (
+    <button
+      className="fixed bottom-5 right-10 w-12 h-12 rounded-full bg-green-800 opacity-80 hover:opacity-100 flex justify-center items-center cursor-pointer"
+      onClick={GoToTop}
+    >
+      <FaArrowUp className="text-white text-lg" />
+    </button>
+  );
+};
 
 export default GoToTopBtn;
