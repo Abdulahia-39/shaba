@@ -85,7 +85,7 @@ const Navbar = () => {
             onClick={toggleReportDropdown}
           >
             <div className="flex gap-1 items-center justify-center">
-              About
+              Report
               <FaChevronDown
                 className={cn(
                   isScrolled ? "text-black" : "text-white",
@@ -96,10 +96,7 @@ const Navbar = () => {
             {showDropdown.report && (
               <ul className="absolute bg-white text-black shadow-lg mt-5 z-10 top-10 flex flex-col justify-around items-center w-45">
                 <li className="h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm transition-all duration-300 ease-in-out hover:bg-green-400 hover:text-white">
-                  <a href="">2019 report</a>
-                </li>
-                <li className="h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm transition-all duration-300 ease-in-out hover:bg-green-400 hover:text-white">
-                  <a href="">2020 report</a>
+                  <Link href="/Blog/20">2019 report</Link>
                 </li>
               </ul>
             )}
@@ -138,10 +135,10 @@ const Navbar = () => {
                   <Link href="/About">About the Company</Link>
                 </li>
                 <li className="h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm transition-all duration-300 ease-in-out hover:bg-green-400 hover:text-white">
-                  <Link href="Blog/2">PPP</Link>
+                  <Link href="/Blog/14">PPP</Link>
                 </li>
                 <li className="h-10 flex justify-center items-center border-b-1 w-full border-gray-500 font-medium text-sm transition-all duration-300 ease-in-out hover:bg-green-400 hover:text-white">
-                  Our work
+                  <Link href="/Blog/19">Our work</Link>
                 </li>
               </ul>
             )}

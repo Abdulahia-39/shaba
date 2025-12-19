@@ -27,7 +27,6 @@ export const BlogProvider = ({ children }) => {
       setBlogPosts(data.data);
       // console.log(data.data);
       setLoading(false);
-      // console.log(data.data);
     }
     fetchData();
   }, []);

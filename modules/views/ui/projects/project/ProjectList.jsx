@@ -2,7 +2,7 @@
 
 import damImg from "@/public/assets/amoudDam.png";
 import ProjectCard from "./ProjectCard";
-import BlogContext from "@/store/BlogContext";
+import BlogContext from "@/contexts/BlogContext";
 import { useContext, useEffect, useState } from "react";
 import LoadingSpinner from "../../blog/LoadingSpinner";
 
@@ -48,7 +48,8 @@ const ProjectList = () => {
   useEffect(() => {
     const projectsList = blog.blogPosts.filter(
       (post) =>
-        post.attributes.categories.data[0].attributes.category === "projects"
+        post.attributes.categories.data[0].attributes.category === "projects" ||
+        post.attributes.categories.data[0].attributes.category === "publication"
     );
     setProjects(projectsList);
   }, [blog]);

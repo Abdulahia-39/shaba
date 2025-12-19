@@ -5,7 +5,7 @@ import biyogalin from "@/public/assets/biyogalin.jpg";
 import galbeed from "@/public/assets/galbeed.png";
 import Post from "./Post";
 import { useContext } from "react";
-import BlogContext from "@/store/BlogContext";
+import BlogContext from "@/contexts/BlogContext";
 import Link from "next/link";
 import Loading from "./Loading";
 
@@ -92,7 +92,7 @@ export default function LatestPosts() {
         <p className="text-lg text-green-500">See the latest posts</p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-10 w-4/5 mx-auto my-10">
-        {blog.blogPosts.map((post) => (
+        {blog.blogPosts.slice(-3).map((post) => (
           <Post
             key={post.id}
             image={post.attributes.postimg.data.attributes.url}

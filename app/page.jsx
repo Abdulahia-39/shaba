@@ -1,5 +1,5 @@
 import Home from "@/modules/views/ui/home/Home";
-import { BlogProvider } from "@/store/BlogContext";
+import { BlogProvider } from "@/contexts/BlogContext";
 
 const Page = () => {
   return <Home />;

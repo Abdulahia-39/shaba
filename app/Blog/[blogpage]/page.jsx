@@ -4,7 +4,7 @@ import Footer from "@/modules/views/ui/home/footer/Footer";
 import Sidebar from "@/modules/views/ui/blog/Sidebar";
 import Article from "@/modules/views/ui/blog/Article";
 import React, { useEffect, useState, useContext } from "react";
-import BlogContext from "@/store/BlogContext";
+import BlogContext from "@/contexts/BlogContext";
 
 const BlogPage = ({ params }) => {
   const [article, setArticle] = useState(null);
@@ -24,6 +24,7 @@ const BlogPage = ({ params }) => {
       <main className="bg-[#f8f9fa] flex w-full min-h-screen">
         <Article
           article={article}
+          postId={blogpage}
           Loading={blog.loading}
           error={blog.error}
           content={article ? article.attributes.content : ""}
@@ -39,7 +40,7 @@ const BlogPage = ({ params }) => {
               : ""
           }
         />
-        <Sidebar />
+        <Sidebar blogPage={blogpage} />
       </main>
       <Footer />
     </>

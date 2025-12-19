@@ -1,5 +1,5 @@
 "use client";
-import { useContact } from "@/store/ContactContext";
+import { useContact } from "@/contexts/ContactContext";
 import SubmitButton from "./SubmitButton";
 
 export default function Form() {
@@ -15,7 +15,7 @@ export default function Form() {
           htmlFor="firstname"
           className="w-full text-gray-500 font-medium text-sm"
         >
-          Firstname <span className="text-red-800">*</span>
+          Name <span className="text-red-800">*</span>
         </label>
         <input
           type="text"
@@ -82,7 +82,7 @@ export default function Form() {
       </div>
 
       <div className="flex justify-end">
-        <SubmitButton />
+        <SubmitButton label="message" />
       </div>
       {success && (
         <p className="text-green-600 transition-opacity duration-500">

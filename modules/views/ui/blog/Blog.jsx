@@ -2,7 +2,7 @@ import Header from "@/modules/views/ui/projects/header/Header";
 import Footer from "@/modules/views/ui/home/footer/Footer";
 import Sidebar from "@/modules/views/ui/blog/Sidebar";
 import BlogBody from "@/modules/views/ui/blog/BlogBody";
-import { BlogProvider } from "@/store/BlogContext";
+import { BlogProvider } from "@/contexts/BlogContext";
 
 export default function Blog() {
   return (

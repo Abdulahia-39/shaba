@@ -2,7 +2,7 @@
 import { useContext } from "react";
 import BlogPosts from "./BlogPosts";
 import LoadingSpinner from "./LoadingSpinner";
-import BlogContext from "@/store/BlogContext";
+import BlogContext from "@/contexts/BlogContext";
 import amoudDam from "@/public/assets/amoudDam.png";
 import biyogalin from "@/public/assets/biyogalin.jpg";
 import galbeed from "@/public/assets/galbeed.png";
@@ -41,6 +41,7 @@ const postsData = [
 
 const BlogBody = () => {
   const blog = useContext(BlogContext);
+  // console.log(blog.blogPosts);
 
   if (blog.loading) {
     return (

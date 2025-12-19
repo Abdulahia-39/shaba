@@ -7,23 +7,22 @@ import Partners from "@/modules/views/ui/home/partners/Partners";
 import LatestPosts from "@/modules/views/ui/home/latestPosts/LatestPosts";
 import Contact from "@/modules/views/ui/home/contact/Contact";
 import Footer from "@/modules/views/ui/home/footer/Footer";
-import { BlogProvider } from "@/store/BlogContext";
+import ProjectVideos from "./sdf/Sdf";
 
 const Home = () => {
   return (
-    <BlogProvider>
-      <main className="bg-[#f8f9fa]">
-        <Header />
-        <About />
-        <Vision />
-        <Mission />
-        <SecretsOfSuccess />
-        <Partners />
-        <LatestPosts />
-        <Contact />
-        <Footer />
-      </main>
-    </BlogProvider>
+    <main className="bg-[#f8f9fa]">
+      <Header />
+      <About />
+      <Vision />
+      <Mission />
+      <SecretsOfSuccess />
+      <Partners />
+      <LatestPosts />
+      <ProjectVideos />
+      <Contact />
+      <Footer />
+    </main>
   );
 };
 

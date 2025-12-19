@@ -12,30 +12,30 @@ const ContactBar = () => {
   return (
     <div className="hidden md:flex justify-around items-center bg-none text-white p-4 h-15">
       <div className="flex-wrap gap-4 lg:flex lg:items-center lg:justify-center">
-        <Link href="" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <FaLocationDot className="text-2xl" />
           <span>Borama, Awdal Somaliland</span>
         </Link>
-        <Link href="" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <FaPhoneAlt className="text-2xl" />
           <span>+252 63 4456478</span>
         </Link>
-        <Link href="" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <MdEmail className="text-2xl" />
           <span>shabaco@gmail.com</span>
         </Link>
       </div>
       <div className="flex gap-6">
-        <Link href="">
+        <Link href="https://www.facebook.com/profile.php?id=61573011164129">
           <FaFacebook className="text-2xl" />
         </Link>
-        <Link href="">
+        <Link href="https://www.linkedin.com/company/shaba-water-company/?viewAsMember=true">
           <FaLinkedin className="text-2xl" />
         </Link>
-        <Link href="">
+        <Link href="/">
           <FaYoutube className="text-2xl" />
         </Link>
-        <Link href="">
+        <Link href="/">
           <FaXTwitter className="text-2xl" />
         </Link>
       </div>

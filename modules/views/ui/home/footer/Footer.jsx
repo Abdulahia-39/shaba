@@ -43,7 +43,7 @@ const Footer = () => {
               <Link href="/Blog">
                 <li className="text-sm cursor-pointer">Blog</li>
               </Link>
-              <Link href="/">
+              <Link href="/Blog/20">
                 <li className="text-sm cursor-pointer">Report</li>
               </Link>
               <Link href="/Contact">
@@ -60,7 +60,7 @@ const Footer = () => {
               <Link href="/Blog">
                 <li className="text-sm">Blog</li>
               </Link>
-              <Link href="/">
+              <Link href="/Blog/20">
                 <li className="text-nowrap text-sm">2019 report</li>
               </Link>
               <Link href="/">
@@ -74,10 +74,10 @@ const Footer = () => {
           <div className="flex-1">
             <ul className="flex flex-col gap-2">
               <li className="text-black font-bold text-lg">Company</li>
-              <Link href="/">
+              <Link href="/About">
                 <li className="text-sm">About us</li>
               </Link>
-              <Link href="/">
+              <Link href="/Blog/19">
                 <li className="text-sm">Our work</li>
               </Link>
             </ul>
@@ -88,10 +88,14 @@ const Footer = () => {
         <div className="flex-1">&copy; 2025 Shaba. All rights reserved.</div>
         <div className="flex-1 flex justify-end gap-4 text-2xl">
           <div className="flex justify-center items-center border-2 border-green-950 rounded-full w-10 h-10">
-            <FaFacebook className=" text-green-950" />
+            <Link href="https://www.facebook.com/profile.php?id=61573011164129">
+              <FaFacebook className=" text-green-950" />
+            </Link>
           </div>
           <div className="flex justify-center items-center border-2 border-green-950 rounded-full w-10 h-10">
-            <FaLinkedin className="text-green-950" />
+            <Link href="https://www.linkedin.com/company/shaba-water-company/?viewAsMember=true">
+              <FaLinkedin className="text-green-950" />
+            </Link>
           </div>
           <div className="flex justify-center items-center border-2 border-green-950 rounded-full w-10 h-10">
             <FaYoutube className="text-green-950" />

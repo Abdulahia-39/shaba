@@ -1,5 +1,5 @@
 import Projects from "@/modules/views/ui/projects/Project";
-import { BlogProvider } from "@/store/BlogContext";
+import { BlogProvider } from "@/contexts/BlogContext";
 
 const Page = () => {
   return <Projects />;

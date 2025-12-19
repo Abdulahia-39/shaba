@@ -13,9 +13,13 @@ export async function submitContact(formData) {
     throw new Error("All fields are required");
   }
 
-  await connectDB();
+  try {
+    await connectDB();
 
-  await Contact.create({ name, email, phone, message });
+    await Contact.create({ name, email, phone, message });
 
-  return { success: true };
+    return { success: true };
+  } catch (err) {
+    throw new Error(err);
+  }
 }

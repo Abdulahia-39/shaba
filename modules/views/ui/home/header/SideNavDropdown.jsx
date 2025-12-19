@@ -24,9 +24,9 @@ const SideNavDropdown = ({
           <span className="mx-auto text-left">{linkName}</span>
         </Link>
         {showDropdown ? (
-          <IconUp className="text-xs text-black" />
-        ) : (
           <IconDown className="text-xs text-black" />
+        ) : (
+          <IconUp className="text-xs text-black" />
         )}
       </div>
       {showDropdown && (

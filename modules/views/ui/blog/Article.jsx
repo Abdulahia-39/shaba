@@ -1,9 +1,12 @@
 import LoadingSpinner from "./LoadingSpinner";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
+import pic from "@/public/assets/amoudDam.png";
+import Comment from "./Comment";
 
 const Article = ({
   article,
+  postId,
   Loading,
   error,
   content,
@@ -11,6 +14,13 @@ const Article = ({
   date,
   category,
 }) => {
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-xl font-bold">Some error occured</p>
+      </div>
+    );
+  }
   return (
     <div
       className={`flex-3 h-full w-full my-10 ${
@@ -26,14 +36,10 @@ const Article = ({
       {article && (
         <section className="w-full">
           <Image
-            src={article.attributes.postimg.data.attributes.formats.small.url}
+            src={article.attributes.postimg.data.attributes.url || pic}
             alt="Article Image"
-            width={
-              article.attributes.postimg.data.attributes.formats.small.width
-            }
-            height={
-              article.attributes.postimg.data.attributes.formats.small.height
-            }
+            width={article.attributes.postimg.data.attributes.width}
+            height={article.attributes.postimg.data.attributes.height}
             className="sm:w-[70%] sm:h-[600px] mx-auto my-5 object-cover object-center aspect-square"
           />
           <div className="flex justify-end w-[70%] mx-auto my-5">
@@ -49,6 +55,7 @@ const Article = ({
             <p className="text-green-900 text-lg">Categories:</p>
             <p className="text-green-900">{category}</p>
           </div>
+          <Comment postId={postId} />
         </section>
       )}
     </div>
