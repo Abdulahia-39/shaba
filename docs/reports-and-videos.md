@@ -1,6 +1,6 @@
 # Reports and project videos
 
-This follow-up depends on public redesign PR #8. Merge #8 first, then this PR. It restores the original two Shaba/SDF videos on Home and Projects using responsive, lazy-loaded YouTube privacy-enhanced embeds, with direct YouTube links if playback is unavailable.
+The public redesign is already on main. Merge the corrective reports/video release PR into main to deploy these features. PR #9 was merged into the old redesign branch after its release, so it did not reach main. It restores the original two Shaba/SDF videos on Home and Projects using responsive, lazy-loaded YouTube privacy-enhanced embeds, with direct YouTube links if playback is unavailable.
 
 ## Update the existing backend
 
