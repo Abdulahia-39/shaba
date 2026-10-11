@@ -6,7 +6,7 @@ This is the initial working direction for a professional corporate website for S
 
 Residents need clear service and contact information. Institutional visitors need to understand Shaba's capabilities, project experience, and how to discuss collaboration. The design should communicate competence and public service through specific content, real photography, and orderly presentation.
 
-The source of truth is this document plus `styles/shaba-tokens.css`. The tokens are intentionally not imported into `app/globals.css` yet, so this foundation does not change production page styling. Introduce them with the redesign, map them into Tailwind's theme, and build shared components as real pages adopt them.
+The source of truth is this document plus `styles/shaba-tokens.css`. Tokens are imported by the root layout and mapped into Tailwind’s `shaba-*` colours. Public pages use shared components and a scoped CSS module in `components/public`; the admin keeps its own scoped workspace styles.
 
 ## Brand and palette
 
@@ -84,3 +84,14 @@ Installed user-level skills:
 Third-party skills are installed in the user's Codex environment, not shipped with the website. The custom skill reads these repository guidelines so token updates do not require duplicating them into a global skill. If its entrypoint changes, synchronize the installed copy. `AGENTS.md` preserves the review workflow for collaborators without those global skills. Use tools and instructions appropriate to the active environment; a skill's provider-specific tool names may need to be mapped to available Codex tools.
 
 Preview the starting palette, type scale, and component direction in `docs/design-preview.html`. It is a static design sample, not a deployed website or functional editor.
+
+
+## Public website implementation
+
+The public design uses Mulish 400/700, the shared forest/navy palette, a white header, left-aligned editorial headings, and genuine photographs already in the repository. The homepage uses a two-column introduction, service enquiries, published projects, company story, partners, and published news. About combines the mission/vision into a compact purpose section. Contact preserves the existing phone numbers, email and office-area description, with working phone/email/maps links.
+
+Partner names/logos for UNICEF, Somaliland Development Fund, Ministry of Water Resources and Borama Municipality were explicitly confirmed as partners by the owner during this redesign. No funding roles, new impact figures, tariff/availability promises, or completion claims were inferred.
+
+`/Projects` contains project-category records; `/Blog` contains news/publication records. Existing `/Blog/[id]` detail URLs are preserved for both, with the correct collection highlighted in navigation. Collections show honest loading, empty, filtered and error states; no sample projects appear in production. Titles, authors, dates, descriptions and Markdown bodies come from the published data service. Use authored headings for project location, purpose, work performed and verified status when publishing case studies; the UI does not fabricate absent metadata.
+
+The public shell is independent of `/admin`. It uses accessible mobile navigation in a modal dialog, native form validation, clear submission feedback, and no decorative entrance animation. Search/type filters are reflected in the collection URL. The frontend introduces no backend resources or environment variables.

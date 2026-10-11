@@ -1,5 +1,3 @@
-import Blog from "@/modules/views/ui/blog/Blog";
-
-export default function Page() {
-  return <Blog />;
-}
+import CollectionPage from '@/components/public/CollectionPage';
+export const metadata = { title: 'Publications & news', description: 'News, perspectives and publications from Shaba Water Company.' };
+export default function Page() { return <CollectionPage />; }

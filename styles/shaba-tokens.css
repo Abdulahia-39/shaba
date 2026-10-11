@@ -1,4 +1,4 @@
-/* Design foundation. Import when applying the redesign; currently not wired into the app. */
+/* Shared brand tokens, imported by the application root layout. */
 :root {
   --shaba-color-brand: #145a46;
   --shaba-color-brand-hover: #104735;

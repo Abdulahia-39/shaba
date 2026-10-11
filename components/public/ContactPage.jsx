@@ -1,0 +1,7 @@
+import { Phone, Mail, MapPin, ArrowUpRight } from 'lucide-react';
+import SiteShell, { PageIntro } from './SiteShell';
+import PublicForm from './PublicForm';
+import styles from './site.module.css';
+export default function ContactPage() {
+  return <SiteShell invitation={false}><PageIntro label="Contact Shaba" title="A conversation starts here." description="For water service enquiries, questions about our work, or opportunities to collaborate, get in touch with our team." /><section className={styles.section}><div className={`${styles.container} ${styles.contactGrid}`}><aside className={styles.contactDetails}><h2>We’re here<br />to help.</h2><p>Contact our team directly or send a message using the form.</p><div><Phone size={22} aria-hidden="true" /><h3>Call us</h3><a href="tel:+252634456478">+252 63 4456478</a><a href="tel:+252634456522">+252 63 4456522</a></div><div><Mail size={22} aria-hidden="true" /><h3>Email</h3><a href="mailto:shabaco@gmail.com">shabaco@gmail.com</a></div><div><MapPin size={22} aria-hidden="true" /><h3>Visit Shaba</h3><p>Near Borama regional hospital<br />Borama, Awdal, Somaliland</p><a href="https://www.google.com/maps/search/?api=1&query=SHABA+Borama+Somaliland" target="_blank" rel="noreferrer">Open in Google Maps<ArrowUpRight size={16} aria-hidden="true" /><span className={styles.srOnly}> (opens in a new tab)</span></a></div></aside><div className={styles.contactFormPanel}><h2>Send us a message</h2><p>Choose an enquiry type to help us understand your message.</p><PublicForm /></div></div></section></SiteShell>;
+}

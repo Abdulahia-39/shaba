@@ -9,11 +9,20 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
     }
 }
 
 @theme inline {
+    --color-shaba-brand: var(--shaba-color-brand);
+    --color-shaba-navy: var(--shaba-color-navy);
+    --color-shaba-ink: var(--shaba-color-ink);
+    --color-shaba-muted: var(--shaba-color-muted);
+    --color-shaba-paper: var(--shaba-color-paper);
+    --color-shaba-surface: var(--shaba-color-surface);
+    --color-shaba-tint: var(--shaba-color-tint);
+    --color-shaba-border: var(--shaba-color-border);
+    --color-shaba-focus: var(--shaba-color-focus);
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
@@ -128,3 +137,5 @@
     @apply bg-background text-foreground;
     }
 }
+
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
