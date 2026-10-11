@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { imageKey, deleteImageVersions } from '../lib/admin/media.mjs';
-import { deleteWithMedia } from '../lib/admin/deletion.mjs';
+import { deleteWithMedia, deletionFailureMessage } from '../lib/admin/deletion.mjs';
 
 test('cleanup validates the exact configured public base and upload key', () => {
   const base = 'https://cdn.example/file/bucket';
@@ -40,4 +40,16 @@ test('shared covers bypass cleanup; invalid listing cannot silently succeed', as
   const response = await deleteWithMedia({ invoke: async () => ({ post: { version: 2 }, deleteImage: false }), cleanup: async () => { assert.fail('shared cover deletion'); } }, 'p', 1);
   assert.equal(response.data.imageRetained, true);
   await assert.rejects(deleteImageVersions({ send: async () => ({ IsTruncated: true }) }, 'bucket', 'uploads/a.webp'));
+});
+
+test('an outdated backend is identified before any image cleanup happens', async () => {
+  let cleaned = false;
+  try {
+    await deleteWithMedia({ invoke: async () => { throw new Error('Unsupported action'); }, cleanup: async () => { cleaned = true; } }, 'p', 1);
+    assert.fail('Old backend should reject deletion');
+  } catch (error) {
+    assert.match(deletionFailureMessage(error), /older version.*Deploy the latest backend/);
+  }
+  assert.equal(cleaned, false);
+  assert.equal(deletionFailureMessage(new Error('private internal diagnostic')), 'Delete failed. Check the B2 and data service configuration, then retry.');
 });

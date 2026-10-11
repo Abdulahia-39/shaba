@@ -1,7 +1,7 @@
 'use server';
 import { requireAdmin } from '@/lib/auth';
 import { callAdminData } from '@/lib/data-client';
-import { deleteWithMedia } from '@/lib/admin/deletion.mjs';
+import { deleteWithMedia, deletionFailureMessage } from '@/lib/admin/deletion.mjs';
 import { mediaClient, imageKey, deleteImageVersions } from '@/lib/admin/media.mjs';
 
 async function execute(action, input = {}) {
@@ -24,7 +24,8 @@ export async function deleteContent(id, version) {
     const client = mediaClient();
     return await deleteWithMedia({ invoke: callAdminData, cleanup: url => deleteImageVersions(client, process.env.B2_BUCKET, imageKey(url, process.env.B2_PUBLIC_BASE_URL)) }, id, version);
   } catch (error) {
-    return { error: /^(Invalid |Conflict:|Post not found|Administrator sign-in required)/.test(error.message) ? error.message : 'Delete failed. Check the B2 and data service configuration, then retry.' };
+    console.error('Admin deletion could not start:', error.name);
+    return { error: deletionFailureMessage(error) };
   }
 }
 export async function loadPostComments(postId) { return execute('adminComments', { postId }); }
