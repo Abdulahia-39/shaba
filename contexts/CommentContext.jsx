@@ -20,31 +20,9 @@ export function CommentProvider({ children }) {
   const [comments, setComments] = useState([]);
   const [success, setSuccess] = useState(false);
 
-  useEffect(() => {
-    async function getAllComments() {
-      setError(null);
-      try {
-        const data = await getComments();
-
-        // Always log with a comma to see the object tree!
-        // console.log("Fetched data:", data);
-
-        if (Array.isArray(data)) {
-          setComments(data);
-          setSuccess(true);
-        }
-      } catch (err) {
-        // err.message is a string, err is an object.
-        // React can't render objects, so store the string!
-        setError(err.message || "An error occurred");
-      }
-    }
-
-    getAllComments();
-  }, []);
-
   const postComment = async (formData) => {
     setError(null);
+    setSuccess(false);
 
     try {
       const newComment = await submitComment(formData);
