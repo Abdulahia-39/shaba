@@ -51,3 +51,9 @@ B2 and DynamoDB do not share a transaction. If cleanup or final removal fails, t
 This operation cleans up the saved cover belonging to the deleted content. It does not sweep abandoned uploads, old replacement covers, inline Markdown images, or previously deleted records. Existing browser/CDN caches can still serve a previously downloaded image after bucket deletion; this workflow does not purge caches. Comments are not bulk-purged by content deletion (they become inaccessible publicly).
 
 No B2 credentials are passed to Lambda. No S3 bucket, API Gateway, queue, scheduler, or other AWS service is added. Existing Lambda/DynamoDB allowance constraints remain unchanged; B2 API usage has its own allowances. Sources: [B2 version listing](https://www.backblaze.com/apidocs/s3-list-object-versions), [version-specific deletion](https://www.backblaze.com/apidocs/s3-delete-object).
+
+## Delete says the backend is an older version
+
+If deletion returns `Unsupported action` from the admin Lambda, merging the frontend did not update the backend. Deploy the latest reviewed backend using the **Later backend changes** section in `docs/aws-deployment.md`. Check for code-only changes to the existing two functions and preserve the table and MediaBaseUrl parameter. Frontend deployments alone cannot enable the deletion commands.
+
+A safe support check is an invocation of `adminBeginDeletePost` with an empty input. A current backend returns `Invalid id` before reading or changing any record. An old backend returns `Unsupported action`. Do not supply a real record ID just to test support. B2 `listFiles` and `deleteFiles` permissions are also required; successful uploads alone do not establish deletion access.
