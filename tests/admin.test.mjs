@@ -113,3 +113,21 @@ test('a cover referenced by another content item is retained', async () => {
   const pending = (await admin({ action: 'adminBeginDeletePost', input: { id: first.id, version: 1 } })).data;
   assert.equal(pending.deleteImage, false);
 });
+
+test('reports publish through admin and remain private when draft or withdrawn', async () => {
+  const { admin, publicService } = setup();
+  const report = { ...input, type: 'report', title: 'Annual report' };
+  const saved = await admin({ action: 'adminSavePost', input: report });
+  assert.equal(saved.ok, true);
+  const id = saved.data.id;
+  assert.equal((await publicService({ action: 'listPosts' })).data.data.length, 0);
+  assert.equal((await publicService({ action: 'getPost', input: { id } })).data.data, null);
+  const published = await admin({ action: 'adminSavePost', input: { ...report, id, version: 1, status: 'published' } });
+  assert.equal(published.ok, true);
+  const publicPost = (await publicService({ action: 'listPosts' })).data.data[0];
+  assert.equal(publicPost.attributes.categories.data[0].attributes.category, 'report');
+  assert.equal((await publicService({ action: 'getPost', input: { id } })).data.data.id, id);
+  await admin({ action: 'adminSavePost', input: { ...report, id, version: 2 } });
+  assert.equal((await publicService({ action: 'listPosts' })).data.data.length, 0);
+  assert.equal((await publicService({ action: 'getPost', input: { id } })).data.data, null);
+});
