@@ -21,7 +21,7 @@ export const BlogProvider = ({ children }) => {
         setError({
           message: "Couldn't fetch places, please try again later",
         });
-        console.log("Error fetching blog data");
+        setLoading(false);
         return;
       }
       setBlogPosts(data.data);
