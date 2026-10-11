@@ -8,7 +8,7 @@ import styles from './dashboard.module.css';
 import { loadDashboard, saveContent, deleteContent, loadPostComments, moderateComment } from './actions';
 
 const blank = () => ({ id: null, version: 0, title: '', description: '', content: '', author: 'Shaba', type: 'blog', status: 'draft', image: null });
-const sections = [{ id: 'content', label: 'All content', icon: Layers }, { id: 'publications', label: 'Publications', icon: FileText }, { id: 'projects', label: 'Projects', icon: FolderOpen }, { id: 'messages', label: 'Contact inbox', icon: Inbox }];
+const sections = [{ id: 'content', label: 'All content', icon: Layers }, { id: 'publications', label: 'Publications', icon: FileText }, { id: 'reports', label: 'Reports', icon: FileText }, { id: 'projects', label: 'Projects', icon: FolderOpen }, { id: 'messages', label: 'Contact inbox', icon: Inbox }];
 const formatDate = value => value ? new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(value)) : '';
 async function result(promise) {
   const response = await promise;
@@ -74,7 +74,7 @@ export default function Dashboard({ email }) {
   function change(key, value) { setDraft(current => ({ ...current, [key]: value })); setDirty(true); setNotice(''); }
   async function choose(post) {
     if (dirty && !await ask({ title: 'Discard unsaved changes?', description: 'Your latest edits have not been saved. Discard them to open another item.', confirm: 'Discard changes' })) return;
-    setDraft(post ? editable(post) : blank()); setDirty(false); setPreview(false); setError(''); setNotice(''); setComments([]); setCommentsLoaded(false); requestAnimationFrame(() => editorHeading.current?.focus());
+    setDraft(post ? editable(post) : { ...blank(), type: tab === 'reports' ? 'report' : tab === 'projects' ? 'project' : 'blog' }); setDirty(false); setPreview(false); setError(''); setNotice(''); setComments([]); setCommentsLoaded(false); requestAnimationFrame(() => editorHeading.current?.focus());
   }
   async function refresh() {
     if (dirty && !await ask({ title: 'Refresh the workspace?', description: 'Refreshing will discard your unsaved edits.', confirm: 'Refresh & discard' })) return;
@@ -143,11 +143,11 @@ export default function Dashboard({ email }) {
   async function switchSection(next) {
     if (next === tab) { setMobileNav(false); return; }
     if (dirty && !await ask({ title: 'Discard unsaved changes?', description: 'Save your edits before leaving, or discard them to switch sections.', confirm: 'Discard changes' })) return;
-    setDraft(blank()); setDirty(false); setPreview(false); setComments([]); setCommentsLoaded(false);
+    setDraft({ ...blank(), type: next === 'reports' ? 'report' : next === 'projects' ? 'project' : 'blog' }); setDirty(false); setPreview(false); setComments([]); setCommentsLoaded(false);
     setTab(next); setSearch(''); setStatus('all'); setMobileNav(false);
   }
   const section = sections.find(item => item.id === tab);
-  const visiblePosts = data.posts.filter(post => (tab !== 'projects' || post.type === 'project') && (tab !== 'publications' || post.type !== 'project'))
+  const visiblePosts = data.posts.filter(post => (tab !== 'reports' || post.type === 'report') && (tab !== 'projects' || post.type === 'project') && (tab !== 'publications' || !['project', 'report'].includes(post.type)))
     .filter(post => status === 'all' || (status === 'pending' ? post.deletionPending : !post.deletionPending && (post.status || 'published') === status))
     .filter(post => post.attributes.title.toLowerCase().includes(search.toLowerCase()));
   const published = data.posts.filter(post => !post.deletionPending && (post.status || 'published') === 'published').length;
@@ -177,7 +177,7 @@ export default function Dashboard({ email }) {
               <div className={styles.libraryHeading}><h2>Content library</h2><button disabled={busy} className={styles.primary} onClick={async () => { await choose(null); }}><Plus aria-hidden="true" size={18} />New</button></div>
               <label className={styles.search}><Search aria-hidden="true" size={17} /><span className={styles.srOnly}>Search content titles</span><input type="search" name="search" autoComplete="off" value={search} onChange={event => setSearch(event.target.value)} placeholder="Search content…" /></label>
               <label className={styles.filter}><span>Show</span><select name="status-filter" value={status} onChange={event => setStatus(event.target.value)}><option value="all">All statuses</option><option value="published">Published</option><option value="draft">Drafts</option><option value="pending">Deletion pending</option></select></label>
-              <ul className={styles.postList}>{visiblePosts.map(post => <li key={post.id}><button disabled={busy} onClick={() => choose(post)} aria-pressed={String(post.id) === draft.id} className={String(post.id) === draft.id ? styles.postSelected : ''}><span className={styles.postType}>{post.type === 'project' ? 'Project' : post.type === 'article' ? 'Article' : 'Blog post'}</span><strong>{post.attributes.title}</strong><span className={styles.postMetadata}><span className={post.deletionPending ? styles.pendingBadge : post.status === 'draft' ? styles.draftBadge : styles.publishedBadge}>{badge(post)}</span><time dateTime={post.updatedAt || post.createdAt}>{formatDate(post.updatedAt || post.createdAt)}</time></span></button></li>)}</ul>
+              <ul className={styles.postList}>{visiblePosts.map(post => <li key={post.id}><button disabled={busy} onClick={() => choose(post)} aria-pressed={String(post.id) === draft.id} className={String(post.id) === draft.id ? styles.postSelected : ''}><span className={styles.postType}>{post.type === 'report' ? 'Report' : post.type === 'project' ? 'Project' : post.type === 'article' ? 'Article' : 'Blog post'}</span><strong>{post.attributes.title}</strong><span className={styles.postMetadata}><span className={post.deletionPending ? styles.pendingBadge : post.status === 'draft' ? styles.draftBadge : styles.publishedBadge}>{badge(post)}</span><time dateTime={post.updatedAt || post.createdAt}>{formatDate(post.updatedAt || post.createdAt)}</time></span></button></li>)}</ul>
               {!visiblePosts.length && <div className={styles.libraryEmpty}><FileText aria-hidden="true" size={28} /><p>{data.posts.length ? 'No content matches these filters.' : 'Your next story starts here.'}</p><span>{data.posts.length ? 'Try another search or status.' : 'Select New to create a post, article, or project.'}</span></div>}
             </section>
             <section className={styles.editor} aria-label="Content editor">
@@ -189,7 +189,7 @@ export default function Dashboard({ email }) {
                 <h2>{draft.title || 'Untitled'}</h2><p className={styles.muted}>By {draft.author}</p><p className={styles.lead}>{draft.description}</p><div className="prose max-w-none"><ReactMarkdown>{draft.content}</ReactMarkdown></div>
               </article> : <form onSubmit={save} className={styles.form}>
                 <fieldset disabled={busy}>
-                  <div className={styles.fieldRow}><label>Content type<select name="type" value={draft.type} onChange={event => change('type', event.target.value)}><option value="blog">Blog post</option><option value="article">Article / publication</option><option value="project">Project</option></select></label><label>Visibility<select name="visibility" value={draft.status} onChange={event => change('status', event.target.value)}><option value="draft">Draft · admin only</option><option value="published">Published · public</option></select></label></div>
+                  <div className={styles.fieldRow}><label>Content type<select name="type" value={draft.type} onChange={event => change('type', event.target.value)}><option value="blog">Blog post</option><option value="article">Article / publication</option><option value="project">Project</option><option value="report">Report</option></select></label><label>Visibility<select name="visibility" value={draft.status} onChange={event => change('status', event.target.value)}><option value="draft">Draft · admin only</option><option value="published">Published · public</option></select></label></div>
                   <label>Title <span className={styles.required}>Required</span><input name="title" autoComplete="off" required maxLength={200} value={draft.title} onChange={event => change('title', event.target.value)} placeholder="Give your content a clear title…" /></label>
                   <label>Author<input name="author" autoComplete="off" required maxLength={100} value={draft.author} onChange={event => change('author', event.target.value)} /></label>
                   <label>Short description <span className={styles.required}>Required</span><textarea name="description" autoComplete="off" required maxLength={1000} rows={3} value={draft.description} onChange={event => change('description', event.target.value)} placeholder="A short introduction for your readers…" /></label>
