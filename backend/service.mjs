@@ -31,14 +31,33 @@ export function createService(store, { admin = false, mediaBase } = {}) {
           const id = input.id ? field(input, 'id', 128) : null;
           const existing = id ? await store.get('POSTS', id) : null;
           if (id && !existing) throw new Error('Post not found');
+          if (existing?.deletionPending) throw new Error('Conflict: deletion is pending; finish deleting this content');
           const expected = existing ? version(input.version) : null;
           if (existing && (existing.version || 0) !== expected) throw new Error('Conflict: content changed; reload before saving');
           const item = contentRecord(input, existing, mediaBase);
+          const posts = await store.query('POSTS');
+          if (posts.some(post => post.deletionPending && post.attributes?.postimg?.data?.attributes?.url === input.image.url)) throw new Error('Conflict: this image belongs to content pending deletion');
           await store.save(item, expected);
           return { ok: true, data: item };
         }
-        case 'adminDeletePost': {
-          await store.remove('POSTS', field(input, 'id', 128), version(input.version));
+        case 'adminBeginDeletePost': {
+          const id = field(input, 'id', 128);
+          const existing = await store.get('POSTS', id);
+          if (!existing) throw new Error('Post not found');
+          const expected = version(input.version);
+          if ((existing.version || 0) !== expected) throw new Error('Conflict: content changed; reload before deleting');
+          const post = existing.deletionPending ? existing : { ...existing, deletionPending: true, version: expected + 1 };
+          if (!existing.deletionPending) await store.save(post, expected);
+          const imageUrl = post.attributes?.postimg?.data?.attributes?.url;
+          const posts = await store.query('POSTS');
+          const shared = posts.some(item => String(item.id) !== id && item.attributes?.postimg?.data?.attributes?.url === imageUrl);
+          return { ok: true, data: { post, imageUrl, deleteImage: !shared } };
+        }
+        case 'adminFinishDeletePost': {
+          const id = field(input, 'id', 128);
+          const existing = await store.get('POSTS', id);
+          if (!existing?.deletionPending) throw new Error('Conflict: begin deletion before finishing');
+          await store.remove('POSTS', id, version(input.version));
           return { ok: true, data: { success: true } };
         }
         case 'adminComments': {

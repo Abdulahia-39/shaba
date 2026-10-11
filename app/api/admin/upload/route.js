@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { prepareImage, MAX_IMAGE_BYTES } from '@/lib/admin/image.mjs';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { mediaClient } from '@/lib/admin/media.mjs';
 import { adminSession } from '@/lib/auth';
 export const runtime = 'nodejs';
 const MAX_BYTES = MAX_IMAGE_BYTES;
@@ -30,9 +31,7 @@ export async function POST(request) {
     const bytes = Buffer.from(await file.arrayBuffer());
     const { data, info } = await prepareImage(bytes);
     const key = `uploads/${randomUUID()}.webp`;
-    const client = new S3Client({ endpoint: process.env.B2_ENDPOINT, region: process.env.B2_REGION,
-      forcePathStyle: true, requestChecksumCalculation: 'WHEN_REQUIRED',
-      credentials: { accessKeyId: process.env.B2_KEY_ID, secretAccessKey: process.env.B2_APPLICATION_KEY } });
+    const client = mediaClient();
     await client.send(new PutObjectCommand({ Bucket: process.env.B2_BUCKET, Key: key, Body: data,
       ContentType: 'image/webp', CacheControl: 'public, max-age=31536000, immutable' }));
     return Response.json({ url: `${process.env.B2_PUBLIC_BASE_URL.replace(/\/$/, '')}/${key}`, width: info.width, height: info.height });

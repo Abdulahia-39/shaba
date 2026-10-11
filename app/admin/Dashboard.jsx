@@ -1,12 +1,15 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { signOut } from 'next-auth/react';
 import ReactMarkdown from 'react-markdown';
+import { FileText, FolderOpen, Inbox, Layers, LogOut, RefreshCw, Plus, Search, Eye, Pencil, Trash2, ArrowUpRight, ImagePlus, Check, Menu, X } from 'lucide-react';
+import AdminDialog from './AdminDialog';
+import styles from './dashboard.module.css';
 import { loadDashboard, saveContent, deleteContent, loadPostComments, moderateComment } from './actions';
 
 const blank = () => ({ id: null, version: 0, title: '', description: '', content: '', author: 'Shaba', type: 'blog', status: 'draft', image: null });
-const inputClass = 'w-full rounded-lg border border-gray-300 bg-white p-3 outline-green-700';
-const buttonClass = 'rounded-lg bg-green-900 px-5 py-3 text-white disabled:opacity-50 cursor-pointer';
+const sections = [{ id: 'content', label: 'All content', icon: Layers }, { id: 'publications', label: 'Publications', icon: FileText }, { id: 'projects', label: 'Projects', icon: FolderOpen }, { id: 'messages', label: 'Contact inbox', icon: Inbox }];
+const formatDate = value => value ? new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(value)) : '';
 async function result(promise) {
   const response = await promise;
   if (response.error) throw new Error(response.error);
@@ -15,7 +18,7 @@ async function result(promise) {
 function editable(post) {
   return { id: String(post.id), version: post.version || 0, ...post.attributes,
     type: post.type || (post.attributes.categories.data[0]?.attributes.category === 'projects' ? 'project' : 'blog'),
-    status: post.status || 'published', image: post.attributes.postimg.data.attributes };
+    deletionPending: Boolean(post.deletionPending), status: post.status || 'published', image: post.attributes.postimg.data.attributes };
 }
 export default function Dashboard({ email }) {
   const [data, setData] = useState({ posts: [], contacts: [] });
@@ -28,6 +31,37 @@ export default function Dashboard({ email }) {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [comments, setComments] = useState([]);
+  const [commentsLoaded, setCommentsLoaded] = useState(false);
+  const [search, setSearch] = useState('');
+  const [status, setStatus] = useState('all');
+  const [mobileNav, setMobileNav] = useState(false);
+  const [dialog, setDialog] = useState(null);
+  const answer = useRef(null);
+  const editorHeading = useRef(null);
+  const sidebarRef = useRef(null);
+  const menuTrigger = useRef(null);
+  useEffect(() => {
+    if (!mobileNav) return;
+    const previous = document.activeElement;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    sidebarRef.current?.querySelector('button')?.focus();
+    const keys = event => {
+      if (event.key === 'Escape') { setMobileNav(false); return; }
+      if (event.key !== 'Tab') return;
+      const controls = [...sidebarRef.current.querySelectorAll('button:not(:disabled), a[href]')];
+      const first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    const resize = () => { if (window.innerWidth >= 960) setMobileNav(false); };
+    document.addEventListener('keydown', keys); window.addEventListener('resize', resize);
+    return () => { document.body.style.overflow = overflow; document.removeEventListener('keydown', keys); window.removeEventListener('resize', resize); previous?.focus(); };
+  }, [mobileNav]);
+  function ask(options) { return new Promise(resolve => { answer.current = resolve; setDialog(options); }); }
+  function closeDialog(value) { setDialog(null); answer.current?.(value); answer.current = null; }
+  useEffect(() => { if (error) setDialog({ title: 'Action could not be completed', description: error, danger: true }); }, [error]);
+  useEffect(() => { if (!notice) return; const timer = setTimeout(() => setNotice(''), 6500); return () => clearTimeout(timer); }, [notice]);
   useEffect(() => {
     result(loadDashboard()).then(setData).catch(err => setError(err.message)).finally(() => setLoading(false));
   }, []);
@@ -38,12 +72,12 @@ export default function Dashboard({ email }) {
     return () => window.removeEventListener('beforeunload', warn);
   }, [dirty]);
   function change(key, value) { setDraft(current => ({ ...current, [key]: value })); setDirty(true); setNotice(''); }
-  function choose(post) {
-    if (dirty && !window.confirm('Discard your unsaved changes?')) return;
-    setDraft(post ? editable(post) : blank()); setDirty(false); setPreview(false); setError(''); setNotice(''); setComments([]);
+  async function choose(post) {
+    if (dirty && !await ask({ title: 'Discard unsaved changes?', description: 'Your latest edits have not been saved. Discard them to open another item.', confirm: 'Discard changes' })) return;
+    setDraft(post ? editable(post) : blank()); setDirty(false); setPreview(false); setError(''); setNotice(''); setComments([]); setCommentsLoaded(false); requestAnimationFrame(() => editorHeading.current?.focus());
   }
   async function refresh() {
-    if (dirty && !window.confirm('Reload and discard your unsaved changes?')) return;
+    if (dirty && !await ask({ title: 'Refresh the workspace?', description: 'Refreshing will discard your unsaved edits.', confirm: 'Refresh & discard' })) return;
     setBusy(true); setError('');
     try {
       setData(await result(loadDashboard())); setDraft(blank()); setDirty(false); setComments([]); setNotice('Dashboard refreshed. Select content to reopen it.');
@@ -75,88 +109,106 @@ export default function Dashboard({ email }) {
     finally { setBusy(false); }
   }
   async function remove() {
-    if (!window.confirm('Delete this content? This cannot be undone. Its uploaded image will remain in B2.')) return;
+    if (!await ask({ title: draft.deletionPending ? 'Finish deleting content?' : 'Delete this content?', description: `“${draft.title}” and its saved cover will be permanently deleted. A cover used by another item will be kept. This cannot be undone.`, confirm: draft.deletionPending ? 'Retry deletion' : 'Delete content & image', danger: true })) return;
     setBusy(true); setError('');
     try {
-      await result(deleteContent(draft.id, draft.version));
+      const response = await deleteContent(draft.id, draft.version);
+      if (response.pendingPost) {
+        setDraft(editable(response.pendingPost)); setDirty(false);
+        setData(current => ({ ...current, posts: current.posts.map(post => String(post.id) === draft.id ? response.pendingPost : post) }));
+      }
+      if (response.error) throw new Error(response.error);
       setData(current => ({ ...current, posts: current.posts.filter(item => String(item.id) !== draft.id) }));
-      setDraft(blank()); setDirty(false); setComments([]); setNotice('Content deleted.');
+      setDraft(blank()); setDirty(false); setComments([]); setNotice(response.data.imageRetained ? 'Content deleted. Its shared cover is still used by another item.' : 'Content and its cover image deleted.');
     } catch (err) { setError(err.message); }
     finally { setBusy(false); }
   }
   async function viewComments() {
     setBusy(true); setError('');
-    try { setComments(await result(loadPostComments(draft.id))); setNotice('Comments loaded.'); }
+    try { setComments(await result(loadPostComments(draft.id))); setCommentsLoaded(true); }
     catch (err) { setError(err.message); }
     finally { setBusy(false); }
   }
   async function removeComment(comment) {
-    if (!window.confirm('Delete this comment?')) return;
+    if (!await ask({ title: 'Delete this comment?', description: 'The comment will be permanently removed from this content.', confirm: 'Delete comment', danger: true })) return;
     setBusy(true); setError('');
     try { await result(moderateComment(draft.id, comment.sk)); setComments(items => items.filter(item => item.sk !== comment.sk)); }
     catch (err) { setError(err.message); }
     finally { setBusy(false); }
   }
-  return <main className="min-h-screen bg-[#f5f7f5] text-gray-900">
-    <header className="bg-green-950 text-white px-6 py-5 flex flex-wrap items-center justify-between gap-4">
-      <div><p className="text-sm text-green-200">SHABA / ADMIN</p><h1 className="text-2xl font-bold">Content dashboard</h1></div>
-      <div className="flex items-center gap-4 text-sm"><span>{email}</span><button disabled={busy} onClick={() => { if (!dirty || window.confirm('Sign out and discard unsaved changes?')) signOut({ callbackUrl: '/admin/login' }); }} className="border border-green-300 rounded-lg px-4 py-2 cursor-pointer">Sign out</button></div>
-    </header>
-    <div className="max-w-7xl mx-auto p-4 sm:p-8">
-      <nav className="flex gap-3 mb-6" aria-label="Admin sections">
-        {['content', 'messages'].map(item => <button key={item} onClick={() => setTab(item)} className={`px-5 py-3 rounded-lg cursor-pointer ${tab === item ? 'bg-green-900 text-white' : 'bg-white border border-gray-300'}`}>{item === 'content' ? 'Publications & projects' : `Contact messages (${data.contacts.length})`}</button>)}
-        <button disabled={busy || loading} onClick={refresh} className="ml-auto text-green-900 underline cursor-pointer disabled:opacity-50">Refresh dashboard</button>
-      </nav>
-      {error && <p role="alert" className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 mb-4">{error}</p>}
-      {notice && <p role="status" className="bg-green-100 text-green-900 rounded-lg p-4 mb-4">{notice}</p>}
-      {loading ? <p role="status">Loading your dashboard…</p> : tab === 'messages' ? <section className="space-y-4">
-        <h2 className="text-xl font-bold">Contact inbox</h2>
-        {!data.contacts.length && <p className="bg-white rounded-xl p-6">No messages yet.</p>}
-        {data.contacts.map(contact => <article key={contact.sk} className="bg-white rounded-xl p-6 border border-gray-200">
-          <h3 className="font-bold">{contact.name}</h3><p className="text-sm text-gray-600">{contact.email} {contact.phone && ` · ${contact.phone}`}</p>
-          <p className="text-sm text-gray-500 mt-1">{contact.sk.split('#')[0]}</p><p className="mt-4 whitespace-pre-wrap break-words">{contact.message}</p>
-        </article>)}
-      </section> : <div className="grid lg:grid-cols-[300px_1fr] gap-6">
-        <aside className="bg-white border border-gray-200 rounded-xl p-5 h-fit">
-          <button disabled={busy} onClick={() => choose(null)} className={`${buttonClass} w-full`}>+ New content</button>
-          <h2 className="font-bold mt-6 mb-3">Your content ({data.posts.length})</h2>
-          {!data.posts.length && <p className="text-sm text-gray-500">Create your first post, article, or project.</p>}
-          <ul className="space-y-2">{data.posts.map(post => <li key={post.id}><button disabled={busy} onClick={() => choose(post)} className={`w-full text-left p-3 rounded-lg border cursor-pointer ${String(post.id) === draft.id ? 'border-green-800 bg-green-50' : 'border-gray-200'}`}>
-            <span className="block font-semibold break-words">{post.attributes.title}</span><span className="text-xs uppercase text-gray-500">{post.type || 'blog'} · {post.status || 'published'}</span>
-          </button></li>)}</ul>
-        </aside>
-        <section className="bg-white border border-gray-200 rounded-xl p-5 sm:p-8">
-          <div className="flex justify-between items-center gap-4 mb-6"><h2 className="text-2xl font-bold">{draft.id ? 'Edit content' : 'Create content'}</h2><button type="button" onClick={() => setPreview(value => !value)} className="text-green-900 underline cursor-pointer">{preview ? 'Back to editor' : 'Preview'}</button></div>
-          {preview ? <article>
-            <p className="text-sm text-gray-500 mb-3">Preview · {draft.status}</p>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            {draft.image && <img src={draft.image.url} alt="Cover preview" className="w-full max-h-96 object-cover rounded-lg mb-6" />}
-            <h1 className="text-3xl font-bold mb-3">{draft.title || 'Untitled'}</h1><p className="text-gray-500 mb-6">{draft.author}</p>
-            <p className="mb-6">{draft.description}</p><div className="prose max-w-none"><ReactMarkdown>{draft.content}</ReactMarkdown></div>
-          </article> : <form onSubmit={save} className="space-y-5">
-            <fieldset disabled={busy} className="space-y-5 disabled:opacity-60">
-              <div className="grid sm:grid-cols-2 gap-4">
-                <label className="block">Content type<select value={draft.type} onChange={e => change('type', e.target.value)} className={`${inputClass} mt-2`}><option value="blog">Blog post</option><option value="article">Article / publication</option><option value="project">Project</option></select></label>
-                <label className="block">Visibility<select value={draft.status} onChange={e => change('status', e.target.value)} className={`${inputClass} mt-2`}><option value="draft">Draft — admin only</option><option value="published">Published — visible to visitors</option></select></label>
-              </div>
-              <label className="block">Title<input required maxLength={200} value={draft.title} onChange={e => change('title', e.target.value)} className={`${inputClass} mt-2`} /></label>
-              <label className="block">Author<input required maxLength={100} value={draft.author} onChange={e => change('author', e.target.value)} className={`${inputClass} mt-2`} /></label>
-              <label className="block">Short description<textarea required maxLength={1000} rows={3} value={draft.description} onChange={e => change('description', e.target.value)} className={`${inputClass} mt-2`} /></label>
-              <div><label htmlFor="cover" className="block">Cover image</label><p className="text-sm text-gray-500 mt-1 mb-3">JPEG, PNG, or WebP. Maximum 3 MB. Uploaded images are public; draft text stays private.</p><input id="cover" type="file" accept="image/jpeg,image/png,image/webp" onChange={upload} className="w-full text-sm file:bg-green-100 file:text-green-950 file:border-0 file:rounded-lg file:px-4 file:py-2 file:mr-3" />
+  async function leave() {
+    if (dirty && !await ask({ title: 'Sign out?', description: 'Your unsaved edits will be discarded.', confirm: 'Sign out & discard' })) return;
+    signOut({ callbackUrl: '/admin/login' });
+  }
+  async function switchSection(next) {
+    if (next === tab) { setMobileNav(false); return; }
+    if (dirty && !await ask({ title: 'Discard unsaved changes?', description: 'Save your edits before leaving, or discard them to switch sections.', confirm: 'Discard changes' })) return;
+    setDraft(blank()); setDirty(false); setPreview(false); setComments([]); setCommentsLoaded(false);
+    setTab(next); setSearch(''); setStatus('all'); setMobileNav(false);
+  }
+  const section = sections.find(item => item.id === tab);
+  const visiblePosts = data.posts.filter(post => (tab !== 'projects' || post.type === 'project') && (tab !== 'publications' || post.type !== 'project'))
+    .filter(post => status === 'all' || (status === 'pending' ? post.deletionPending : !post.deletionPending && (post.status || 'published') === status))
+    .filter(post => post.attributes.title.toLowerCase().includes(search.toLowerCase()));
+  const published = data.posts.filter(post => !post.deletionPending && (post.status || 'published') === 'published').length;
+  const draftCount = data.posts.filter(post => !post.deletionPending && post.status === 'draft').length;
+  const badge = post => post.deletionPending ? 'Deletion pending' : post.status || 'published';
+  return <div className={styles.workspace}>
+    <a href="#admin-main" className={styles.skipLink}>Skip to workspace</a>
+    <aside id="admin-navigation" ref={sidebarRef} role={mobileNav ? 'dialog' : undefined} aria-modal={mobileNav || undefined} aria-label="Administration navigation" className={`${styles.sidebar} ${mobileNav ? styles.sidebarOpen : ''}`}>
+      <div className={styles.brand}><img src="/assets/shabalogo.png" alt="Shaba" width="56" height="56" /><div><strong>Shaba</strong><span>Administration</span></div><button className={styles.mobileClose} aria-label="Close navigation" onClick={() => setMobileNav(false)}><X aria-hidden="true" size={20} /></button></div>
+      <nav aria-label="Admin sections" className={styles.navigation}>{sections.map(({ id, label, icon: Icon }) => <button key={id} disabled={busy} onClick={() => switchSection(id)} aria-current={tab === id ? 'page' : undefined} className={tab === id ? styles.navActive : ''}><Icon aria-hidden="true" size={20} /><span>{label}</span>{id === 'messages' && <span className={styles.count}>{data.contacts.length}</span>}</button>)}</nav>
+      <div className={styles.sidebarBottom}><a href="/" target="_blank" rel="noreferrer"><ArrowUpRight aria-hidden="true" size={18} />View website<span className={styles.srOnly}> (opens in a new tab)</span></a><div className={styles.account}><span className={styles.avatar}>A</span><div><strong>Administrator</strong><span>{email}</span></div></div><button disabled={busy} onClick={leave}><LogOut aria-hidden="true" size={18} />Sign out</button></div>
+    </aside>
+    <main id="admin-main" inert={mobileNav || undefined} className={styles.main}>
+      <header className={styles.topbar}><div className={styles.topbarLabel}><button ref={menuTrigger} className={styles.mobileToggle} aria-controls="admin-navigation" aria-label="Open navigation" aria-expanded={mobileNav} onClick={() => setMobileNav(true)}><Menu aria-hidden="true" size={22} /></button><span>Shaba workspace</span></div><span className={styles.privateLabel}>Private administration</span></header>
+      <div className={styles.content}>
+        <div className={styles.pageHeading}><div><h1>{section.label}</h1><p>{tab === 'messages' ? 'Conversations from your website, in one place.' : 'Keep your community and partners informed.'}</p></div><button className={styles.secondary} disabled={busy || loading} onClick={refresh}><RefreshCw aria-hidden="true" size={17} />{busy ? 'Working…' : 'Refresh'}</button></div>
+        {notice && <div role="status" className={styles.toast}><Check aria-hidden="true" size={18} /><span>{notice}</span><button aria-label="Dismiss notification" onClick={() => setNotice('')}><X aria-hidden="true" size={16} /></button></div>}
+        {error && <div role="alert" className={styles.errorBanner}>{error}<button disabled={busy} onClick={() => { setError(''); refresh(); }}>Try refreshing</button></div>}
+        {loading ? <div role="status" className={styles.empty}>Loading your workspace…</div> : tab === 'messages' ? <section className={styles.inbox} aria-label="Contact messages">
+          <div className={styles.sectionHeading}><h2>Contact inbox</h2><span>{data.contacts.length} messages</span></div>
+          {!data.contacts.length && <div className={styles.empty}><Inbox aria-hidden="true" size={32} /><h3>No messages yet</h3><p>Messages submitted through the website will appear here.</p></div>}
+          {data.contacts.map(contact => <article key={contact.sk} className={styles.message}><div className={styles.messageHeader}><div><h3>{contact.name}</h3><a href={`mailto:${contact.email}`}>{contact.email}</a>{contact.phone && <p>{contact.phone}</p>}</div><time dateTime={contact.sk.split('#')[0]}>{formatDate(contact.sk.split('#')[0])}</time></div><p className={styles.messageBody}>{contact.message}</p></article>)}
+        </section> : <>
+          <div className={styles.summary}><span><strong>{data.posts.length}</strong> total items</span><span><strong>{published}</strong> published</span><span><strong>{draftCount}</strong> drafts</span></div>
+          <div className={styles.editorGrid}>
+            <section className={styles.library} aria-label="Content library">
+              <div className={styles.libraryHeading}><h2>Content library</h2><button disabled={busy} className={styles.primary} onClick={async () => { await choose(null); }}><Plus aria-hidden="true" size={18} />New</button></div>
+              <label className={styles.search}><Search aria-hidden="true" size={17} /><span className={styles.srOnly}>Search content titles</span><input type="search" name="search" autoComplete="off" value={search} onChange={event => setSearch(event.target.value)} placeholder="Search content…" /></label>
+              <label className={styles.filter}><span>Show</span><select name="status-filter" value={status} onChange={event => setStatus(event.target.value)}><option value="all">All statuses</option><option value="published">Published</option><option value="draft">Drafts</option><option value="pending">Deletion pending</option></select></label>
+              <ul className={styles.postList}>{visiblePosts.map(post => <li key={post.id}><button disabled={busy} onClick={() => choose(post)} aria-pressed={String(post.id) === draft.id} className={String(post.id) === draft.id ? styles.postSelected : ''}><span className={styles.postType}>{post.type === 'project' ? 'Project' : post.type === 'article' ? 'Article' : 'Blog post'}</span><strong>{post.attributes.title}</strong><span className={styles.postMetadata}><span className={post.deletionPending ? styles.pendingBadge : post.status === 'draft' ? styles.draftBadge : styles.publishedBadge}>{badge(post)}</span><time dateTime={post.updatedAt || post.createdAt}>{formatDate(post.updatedAt || post.createdAt)}</time></span></button></li>)}</ul>
+              {!visiblePosts.length && <div className={styles.libraryEmpty}><FileText aria-hidden="true" size={28} /><p>{data.posts.length ? 'No content matches these filters.' : 'Your next story starts here.'}</p><span>{data.posts.length ? 'Try another search or status.' : 'Select New to create a post, article, or project.'}</span></div>}
+            </section>
+            <section className={styles.editor} aria-label="Content editor">
+              <div className={styles.editorHeader}><div><span className={styles.editorKicker}>{draft.id ? 'Content editor' : 'New content'}</span><h2 ref={editorHeading} tabIndex={-1}>{draft.id ? draft.title : 'Create something worth sharing'}</h2></div><button type="button" disabled={busy} className={styles.secondary} onClick={() => setPreview(value => !value)}>{preview ? <Pencil aria-hidden="true" size={17} /> : <Eye aria-hidden="true" size={17} />}{preview ? 'Edit' : 'Preview'}</button></div>
+              {draft.deletionPending ? <div className={styles.pendingPanel}><h3>Deletion pending</h3><p>This content is hidden from visitors. Its image cleanup or final deletion did not finish. Retry to complete the deletion.</p><button disabled={busy} className={styles.dangerButton} onClick={remove}><Trash2 aria-hidden="true" size={18} />{busy ? 'Deleting…' : 'Retry deletion'}</button></div> : preview ? <article className={styles.preview}>
+                <span className={draft.status === 'draft' ? styles.draftBadge : styles.publishedBadge}>{draft.status} preview</span>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                {draft.image && <img src={draft.image.url} alt="Cover image" className="max-h-48 rounded-lg mt-4" />}
-              </div>
-              <label className="block">Body <span className="text-sm text-gray-500">(Markdown)</span><textarea required maxLength={60000} rows={14} value={draft.content} onChange={e => change('content', e.target.value)} className={`${inputClass} mt-2 font-mono text-sm`} placeholder="Write your content here. Use ## for headings and **text** for bold." /></label>
-              <div className="flex flex-wrap items-center gap-4"><button disabled={!draft.image} className={buttonClass}>{busy ? 'Working…' : draft.status === 'published' ? 'Save & publish' : 'Save draft'}</button>{draft.id && <button type="button" onClick={remove} className="text-red-700 underline cursor-pointer">Delete content</button>}<span className="text-sm text-gray-500">{dirty ? 'Unsaved changes' : 'No unsaved changes'}</span></div>
-              {!draft.image && <p className="text-sm text-gray-500">Upload a cover image before saving.</p>}
-            </fieldset>
-          </form>}
-          {draft.id && <section className="border-t border-gray-200 mt-8 pt-6">
-            <button disabled={busy} onClick={viewComments} className="text-green-900 underline cursor-pointer">Load comments for this content</button>
-            {comments.map(comment => <article key={comment.sk} className="border rounded-lg p-4 mt-4"><p className="font-semibold">{comment.name}</p><p className="text-sm text-gray-500">{comment.email} · {comment.createdAt}</p><p className="whitespace-pre-wrap my-3">{comment.comment}</p><button disabled={busy} onClick={() => removeComment(comment)} className="text-red-700 underline cursor-pointer">Delete comment</button></article>)}
-          </section>}
-        </section>
-      </div>}
-    </div>
-  </main>;
+                {draft.image && <img src={draft.image.url} alt={`Cover for ${draft.title || 'untitled content'}`} width={draft.image.width} height={draft.image.height} />}
+                <h2>{draft.title || 'Untitled'}</h2><p className={styles.muted}>By {draft.author}</p><p className={styles.lead}>{draft.description}</p><div className="prose max-w-none"><ReactMarkdown>{draft.content}</ReactMarkdown></div>
+              </article> : <form onSubmit={save} className={styles.form}>
+                <fieldset disabled={busy}>
+                  <div className={styles.fieldRow}><label>Content type<select name="type" value={draft.type} onChange={event => change('type', event.target.value)}><option value="blog">Blog post</option><option value="article">Article / publication</option><option value="project">Project</option></select></label><label>Visibility<select name="visibility" value={draft.status} onChange={event => change('status', event.target.value)}><option value="draft">Draft · admin only</option><option value="published">Published · public</option></select></label></div>
+                  <label>Title <span className={styles.required}>Required</span><input name="title" autoComplete="off" required maxLength={200} value={draft.title} onChange={event => change('title', event.target.value)} placeholder="Give your content a clear title…" /></label>
+                  <label>Author<input name="author" autoComplete="off" required maxLength={100} value={draft.author} onChange={event => change('author', event.target.value)} /></label>
+                  <label>Short description <span className={styles.required}>Required</span><textarea name="description" autoComplete="off" required maxLength={1000} rows={3} value={draft.description} onChange={event => change('description', event.target.value)} placeholder="A short introduction for your readers…" /></label>
+                  <div className={styles.coverField}><div className={styles.sectionHeading}><label htmlFor="cover">Cover image <span className={styles.required}>Required</span></label>{draft.image && <span>{draft.image.width} × {draft.image.height}</span>}</div><div className={styles.coverUpload}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {draft.image ? <img src={draft.image.url} alt="Selected cover" width={draft.image.width} height={draft.image.height} /> : <ImagePlus aria-hidden="true" size={30} />}
+                    <div><label htmlFor="cover">{draft.image ? 'Replace cover image' : 'Upload a cover image'}</label><p>JPEG, PNG or WebP, up to 3 MB.</p><input id="cover" name="cover" type="file" accept="image/jpeg,image/png,image/webp" onChange={upload} aria-describedby="cover-help" /></div>
+                  </div><p id="cover-help" className={styles.help}>Uploaded images are public. Draft text stays private.</p></div>
+                  <label>Body <span className={styles.required}>Required</span><span className={styles.help}>Use Markdown: ## for headings and **text** for bold.</span><textarea name="body" autoComplete="off" required maxLength={60000} rows={12} value={draft.content} onChange={event => change('content', event.target.value)} placeholder="Tell your story…" className={styles.bodyInput} /></label>
+                  <div className={styles.savebar}><div><button className={styles.primary} disabled={!draft.image}><Check aria-hidden="true" size={18} />{busy ? 'Saving…' : draft.status === 'published' ? 'Save & publish' : 'Save draft'}</button><span className={styles.saveState}>{dirty ? 'Unsaved changes' : draft.id ? 'All changes saved' : 'Ready when you are'}</span></div>{draft.id && <button type="button" onClick={remove} className={styles.deleteLink}><Trash2 aria-hidden="true" size={16} />Delete</button>}</div>
+                  {!draft.image && <p className={styles.help}>Add a cover image to save this content.</p>}
+                </fieldset>
+              </form>}
+              {draft.id && !draft.deletionPending && <section className={styles.comments}><div className={styles.sectionHeading}><h3>Comments</h3><button disabled={busy} onClick={viewComments} className={styles.textButton}>{commentsLoaded ? 'Refresh comments' : 'Load comments'}</button></div>{commentsLoaded && !comments.length && <p className={styles.help}>No comments on this content yet.</p>}{comments.map(comment => <article key={comment.sk}><div className={styles.messageHeader}><div><strong>{comment.name}</strong><p>{comment.email}</p></div><time dateTime={comment.createdAt}>{formatDate(comment.createdAt)}</time></div><p className={styles.messageBody}>{comment.comment}</p><button disabled={busy} onClick={() => removeComment(comment)} className={styles.deleteLink}><Trash2 aria-hidden="true" size={16} />Delete comment</button></article>)}</section>}
+            </section>
+          </div>
+        </>}
+      </div>
+    </main>
+    <AdminDialog dialog={dialog} onClose={closeDialog} />
+  </div>;
 }

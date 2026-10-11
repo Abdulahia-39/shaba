@@ -36,7 +36,7 @@ export function contentRecord(input, existing, mediaBase) {
   };
 }
 // Records imported from Strapi have no status; they were published exports.
-export const isPublished = post => Boolean(post && (post.status === 'published' || post.status === undefined));
+export const isPublished = post => Boolean(post && !post.deletionPending && (post.status === 'published' || post.status === undefined));
 export function publicPosts(posts) {
   return posts.filter(isPublished).sort((a, b) =>
     String(a.attributes.publishedAt || '').localeCompare(String(b.attributes.publishedAt || ''))
