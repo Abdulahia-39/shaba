@@ -10,15 +10,11 @@ Run `node --test tests/*.test.mjs` for data contract, validation, privacy, and f
 
 ## Deployment
 
-Install AWS CLI and AWS SAM CLI, authenticate to the intended account, then run:
+Use AWS CLI with an authenticated `shaba` profile. SAM and S3 deployment buckets are not required. Run `npm ci` then `npm run backend:build` to generate `build/shaba-backend.json`. It embeds the complete bundled Lambda code inline in a plain CloudFormation template. Follow [the no-S3 deployment guide](docs/aws-deployment.md) to validate, preview the change set, and deploy.
 
-```sh
-sam validate --template-file backend/template.yaml
-sam build --template-file backend/template.yaml
-sam deploy --guided
-```
+Use stack name `shaba-data` in `us-east-1` to match the deployment policy. Set the `MediaBaseUrl` parameter to the exact public B2 base URL. Copy `FunctionName` into `SHABA_DATA_FUNCTION` and `AdminFunctionName` into `SHABA_ADMIN_FUNCTION`, using the same region. AWS SDK v3 is supplied by the Lambda Node.js 22 runtime. No S3 bucket, public function URL, API Gateway, VPC, NAT gateway, global secondary index, or provisioned concurrency is created. The table is retained on stack deletion. Later backend updates use the same generated-template workflow; no separate out-of-band code upload is needed.
 
-SAM deployment creates billable-capable AWS resources. Review the account and region before deployment. Copy the stack's FunctionName output into `SHABA_DATA_FUNCTION` and AdminFunctionName into `SHABA_ADMIN_FUNCTION`, and use the same region. Supply the exact public B2 base URL as the `MediaBaseUrl` stack parameter. The Lambda runtime supplies AWS SDK v3. No public function URL, API Gateway, VPC, NAT gateway, or global secondary index is created. The table is retained on stack deletion.
+CloudFormation has no additional charge for these AWS resource types. Lambda, DynamoDB and basic logs have recurring free allowances; other account usage and excess usage can incur charges. This is not a promise of a zero bill. IAM permissions do not enforce a spending cap.
 
 ## Data model and migration
 
@@ -44,7 +40,7 @@ The table provisions 5 RCUs and 5 WCUs with no autoscaling, within DynamoDB's re
 
 AWS sources: [DynamoDB pricing](https://aws.amazon.com/dynamodb/pricing/), [Lambda pricing](https://aws.amazon.com/lambda/pricing/), [AWS account free-tier terms](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/free-tier.html).
 
-Account eligibility, outbound transfer, CloudWatch logs, SAM deployment artifacts in S3, media hosting, and frontend hosting must be checked separately. The newer six-month AWS Free Plan is distinct from recurring service allowances. This template sets seven-day log retention. Public Next.js form submissions still need deployment-level abuse controls (rate limiting / bot protection) before production; IAM protects direct Lambda access but does not prevent abuse through the site.
+Account eligibility, outbound transfer, CloudWatch logs, media hosting, and frontend hosting must be checked separately. The newer six-month AWS Free Plan is distinct from recurring service allowances. This template sets seven-day log retention. Public Next.js form submissions still need deployment-level abuse controls (rate limiting / bot protection) before production; IAM protects direct Lambda access but does not prevent abuse through the site.
 
 
 ## Single-admin Google editor
@@ -54,8 +50,8 @@ Visit `/admin` directly; it has no public navigation link. Every admin page, ser
 1. Create a Google OAuth **Web application** client and configure the consent screen. If the application is in testing mode, add the admin account as a test user.
 2. Add redirect URIs `http://localhost:3000/api/auth/callback/google` and `https://YOUR_DOMAIN/api/auth/callback/google`. Use your actual production domain.
 3. Set `ADMIN_EMAIL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `NEXTAUTH_URL` (the app's canonical URL), and a strong `NEXTAUTH_SECRET` in `.env.local` and production hosting. Generate a secret locally with `openssl rand -base64 32`; never commit it. See [Google provider setup](https://next-auth.js.org/providers/google).
-4. Deploy/update the SAM stack and set `SHABA_ADMIN_FUNCTION` from its output. Grant the Next.js server permission to invoke **both** function ARNs. The public function denies all admin actions even if its caller supplies an `admin` flag; the privileged function uses an environment setting controlled at deployment and is accessible only through IAM.
-5. In B2, create a bucket-scoped application key with write access under the `uploads/` prefix, and any bucket-discovery capability required by B2's S3 API. Set `B2_ENDPOINT`, `B2_REGION`, `B2_BUCKET`, `B2_KEY_ID`, and `B2_APPLICATION_KEY`. Keep these separate from AWS credentials. `B2_PUBLIC_BASE_URL` in Next.js must match the SAM `MediaBaseUrl` value. See [B2 integration configuration](https://www.backblaze.com/docs/en/cloud-storage-get-started-with-a-backblaze-integration).
+4. Deploy/update the CloudFormation stack and set `SHABA_ADMIN_FUNCTION` from its output. Grant the Next.js server permission to invoke **both** function ARNs. The public function denies all admin actions even if its caller supplies an `admin` flag; the privileged function uses an environment setting controlled at deployment and is accessible only through IAM.
+5. In B2, create a bucket-scoped application key with write access under the `uploads/` prefix, and any bucket-discovery capability required by B2's S3 API. Set `B2_ENDPOINT`, `B2_REGION`, `B2_BUCKET`, `B2_KEY_ID`, and `B2_APPLICATION_KEY`. Keep these separate from AWS credentials. `B2_PUBLIC_BASE_URL` in Next.js must match the CloudFormation `MediaBaseUrl` value. See [B2 integration configuration](https://www.backblaze.com/docs/en/cloud-storage-get-started-with-a-backblaze-integration).
 6. Restart/redeploy Next.js, visit `/admin`, and sign in. Create content, upload a cover, preview it, and save a draft or publish it. Test another Google account: it must be rejected. Test a draft URL while signed out: its content must not be exposed.
 
 The editor supports blog posts, articles/publications, and projects with title, author, description, Markdown body, and cover image. Projects appear on `/Projects`; published content also appears in the blog. It includes a private contact inbox and per-post comment deletion. Saving detects concurrent edits and rejects stale versions. Use Refresh dashboard, then reopen content after a conflict. Existing public pages show updates after a refresh.
