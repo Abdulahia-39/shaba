@@ -1,45 +1,21 @@
-"use client";
-import { createContext, useState, useEffect } from "react";
-import { fetchBlogData } from "@/actions/blog-actions";
-
-const BlogContext = createContext({
-  loading: false,
-  error: null,
-  blogPosts: [],
-});
-
-export const BlogProvider = ({ children }) => {
+'use client';
+import { createContext, useCallback, useEffect, useState } from 'react';
+import { fetchBlogData } from '@/actions/blog-actions';
+const BlogContext = createContext({ blogPosts: [], loading: true, error: null, refresh: () => {} });
+export function BlogProvider({ children }) {
   const [blogPosts, setBlogPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
-
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      const data = await fetchBlogData();
-      if (!data) {
-        setError({
-          message: "Couldn't fetch places, please try again later",
-        });
-        setLoading(false);
-        return;
-      }
-      setBlogPosts(data.data);
-      // console.log(data.data);
-      setLoading(false);
-    }
-    fetchData();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const refresh = useCallback(async () => {
+    setLoading(true); setError(null);
+    try {
+      const response = await fetchBlogData();
+      if (!Array.isArray(response?.data)) throw new Error('Content unavailable');
+      setBlogPosts(response.data);
+    } catch { setError({ message: 'Content is temporarily unavailable. Please try again.' }); }
+    finally { setLoading(false); }
   }, []);
-
-  const blogValue = {
-    blogPosts: blogPosts,
-    loading: loading,
-    error: error,
-  };
-
-  return (
-    <BlogContext.Provider value={blogValue}>{children}</BlogContext.Provider>
-  );
-};
-
+  useEffect(() => { refresh(); }, [refresh]);
+  return <BlogContext.Provider value={{ blogPosts, loading, error, refresh }}>{children}</BlogContext.Provider>;
+}
 export default BlogContext;
