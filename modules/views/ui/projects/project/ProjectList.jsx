@@ -48,8 +48,7 @@ const ProjectList = () => {
   useEffect(() => {
     const projectsList = blog.blogPosts.filter(
       (post) =>
-        post.attributes.categories.data[0].attributes.category === "projects" ||
-        post.attributes.categories.data[0].attributes.category === "publication"
+        post.attributes.categories.data.some(category => category.attributes.category === "projects")
     );
     setProjects(projectsList);
   }, [blog]);
