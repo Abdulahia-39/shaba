@@ -4,6 +4,7 @@ import { ArrowUpRight, Droplets, MessagesSquare, Waypoints } from 'lucide-react'
 import { BlogProvider } from '@/contexts/BlogContext';
 import SiteShell from './SiteShell';
 import ContentCollection from './ContentCollection';
+import ProjectVideos from './ProjectVideos';
 import Partners from './Partners';
 import styles from './site.module.css';
 export default function HomePage() {
@@ -16,6 +17,7 @@ export default function HomePage() {
     </div></div></section>
     <section className={styles.section}><div className={styles.container}><ContentCollection kind="projects" compact /></div></section>
     <section className={`${styles.section} ${styles.storySection}`}><div className={`${styles.container} ${styles.storyGrid}`}><figure className={styles.storyImage}><Image src="/assets/success.jpg" alt="A concrete infrastructure wall under construction in a dry landscape" fill sizes="(max-width: 899px) 100vw, 600px" /></figure><div className={styles.storyCopy}><p className={styles.eyebrow}>Rooted in Borama</p><h2>A local company.<br />A shared responsibility.</h2><p>Established in 2003, Shaba is a public-private partnership water supply company in Borama, in Somaliland’s Awdal region.</p><p>We bring together the work of a local service provider and collaboration with public institutions and development partners.</p><Link href="/About" className={styles.textLink}>Get to know Shaba<ArrowUpRight size={19} aria-hidden="true" /></Link></div></div></section>
+    <ProjectVideos />
     <Partners />
     <section className={`${styles.section} ${styles.softSection}`}><div className={styles.container}><ContentCollection compact /></div></section>
   </BlogProvider></SiteShell>;

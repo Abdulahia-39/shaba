@@ -11,7 +11,7 @@ export function version(value) {
 }
 export function contentRecord(input, existing, mediaBase) {
   const type = field(input, 'type', 20);
-  if (!['blog', 'article', 'project'].includes(type)) throw new Error('Invalid type');
+  if (!['blog', 'article', 'project', 'report'].includes(type)) throw new Error('Invalid type');
   const status = field(input, 'status', 20);
   if (!['draft', 'published'].includes(status)) throw new Error('Invalid status');
   const image = input.image;
@@ -22,7 +22,7 @@ export function contentRecord(input, existing, mediaBase) {
   if (base.protocol !== 'https:' || url.origin !== base.origin || !url.pathname.startsWith(prefix) || url.search || url.hash || image.url.length > 2048) throw new Error('Invalid image URL');
   if (!Number.isInteger(image.width) || !Number.isInteger(image.height) || image.width < 1 || image.height < 1 || image.width > 2400 || image.height > 2400) throw new Error('Invalid image dimensions');
   const now = new Date().toISOString();
-  const category = type === 'project' ? 'projects' : type === 'article' ? 'publication' : 'blog';
+  const category = type === 'report' ? 'report' : type === 'project' ? 'projects' : type === 'article' ? 'publication' : 'blog';
   const id = existing?.id ?? randomUUID();
   return { pk: 'POSTS', sk: String(id), id, type, status, version: (existing?.version || 0) + 1,
     updatedAt: now, createdAt: existing?.createdAt || now,

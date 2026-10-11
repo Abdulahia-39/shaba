@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 import styles from './site.module.css';
-const links = [{ href: '/', label: 'Home' }, { href: '/#services', label: 'Services' }, { href: '/Projects', label: 'Projects' }, { href: '/About', label: 'About Shaba' }, { href: '/Blog', label: 'Publications' }];
+const links = [{ href: '/', label: 'Home' }, { href: '/#services', label: 'Services' }, { href: '/Projects', label: 'Projects' }, { href: '/About', label: 'About Shaba' }, { href: '/Blog', label: 'Publications' }, { href: '/Reports', label: 'Reports' }];
 export default function SiteHeader({ activePath }) {
   const currentPath = usePathname();
   const pathname = activePath || currentPath;
