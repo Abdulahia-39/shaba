@@ -10,7 +10,7 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  { ignores: [".next/**", ".aws-sam/**", "out/**", "build/**"] },
+  { ignores: [".next/**", ".aws-sam/**", "out/**", "build/**", "**/.wrangler/**", "migration-data/**"] },
   ...compat.extends("next/core-web-vitals"),
 ];
 

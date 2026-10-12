@@ -1,6 +1,6 @@
 # Shaba
 
-Next.js 15 frontend with a private AWS Lambda data service, DynamoDB, and Backblaze B2 object storage. The active server actions no longer use Strapi or MongoDB. Legacy MongoDB files remain unused for migration reference.
+Next.js 15 frontend hosted on Vercel, with a selectable AWS Lambda/DynamoDB or Cloudflare Worker/D1 backend and Backblaze B2 object storage. The active server actions no longer use Strapi or MongoDB. Legacy MongoDB files remain unused for migration reference.
 
 ## Development
 
@@ -8,7 +8,13 @@ Run `npm ci`, copy `.env.example` to `.env.local`, configure AWS credentials, th
 
 Run `node --test tests/*.test.mjs` for data contract, validation, privacy, and failure handling checks.
 
-## Deployment
+## Cloudflare backend migration
+
+See [the step-by-step backend migration guide](docs/cloudflare-backend.md). The frontend remains on Vercel and Google sign-in/B2 processing remain unchanged. `SHABA_DATA_PROVIDER=aws` is the default until the D1 import is verified; switching to `cloudflare` uses a server-to-server API with separate public/admin tokens. No Cloudflare API account token or B2 credentials are exposed by the Worker.
+
+Run `npm run cf:check` for a deployment dry run and `npm test` for real local D1 contract/security checks. Data exports contain private drafts and contact details; keep `migration-data/` out of Git and preserve an offline copy.
+
+## AWS deployment (existing backend / rollback)
 
 Use AWS CLI with an authenticated `shaba` profile. SAM and S3 deployment buckets are not required. Run `npm ci` then `npm run backend:build` to generate `build/shaba-backend.json`. It embeds the complete bundled Lambda code inline in a plain CloudFormation template. Follow [the no-S3 deployment guide](docs/aws-deployment.md) to validate, preview the change set, and deploy.
 
