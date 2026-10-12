@@ -42,3 +42,8 @@ next-env.d.ts
 
 !.env.example
 .aws-sam/
+
+# Cloudflare local state, secrets and private migration exports
+.wrangler/
+.dev.vars*
+migration-data/

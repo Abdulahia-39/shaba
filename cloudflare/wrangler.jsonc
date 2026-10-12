@@ -1,0 +1,15 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "shaba-data",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-10-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": { "enabled": false },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "shaba-data",
+    "database_id": "b79dd67f-9ef9-4fb7-9f7c-04b3696cde57",
+    "migrations_dir": "migrations"
+  }]
+}

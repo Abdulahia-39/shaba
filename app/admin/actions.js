@@ -10,7 +10,7 @@ async function execute(action, input = {}) {
     return { data: await callAdminData(action, input) };
   } catch (error) {
     console.error('Admin data operation failed:', action, error.name);
-    const message = /^(Invalid |Conflict:|Post not found|Administrator sign-in required)/.test(error.message)
+    const message = /^(Invalid |Conflict:|Post not found|Administrator sign-in required|Data writes are temporarily paused)/.test(error.message)
       ? error.message : 'Admin data service unavailable. Check the deployment configuration and try again.';
     return { error: message };
   }
@@ -20,7 +20,7 @@ export async function saveContent(input) { return execute('adminSavePost', input
 export async function deleteContent(id, version) {
   try {
     await requireAdmin();
-    // Check configuration before hiding the record, then obtain its trusted image from Lambda.
+    // Check configuration before hiding the record, then obtain its trusted image from the data service.
     const client = mediaClient();
     return await deleteWithMedia({ invoke: callAdminData, cleanup: url => deleteImageVersions(client, process.env.B2_BUCKET, imageKey(url, process.env.B2_PUBLIC_BASE_URL)) }, id, version);
   } catch (error) {
